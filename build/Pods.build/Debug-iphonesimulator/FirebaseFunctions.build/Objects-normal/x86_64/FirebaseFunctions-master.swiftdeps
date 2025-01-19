@@ -1,0 +1,12 @@
+version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
+options: "0fac1b548e51eb543a118546a7c6bb3336864b80038fd6e8edfaf8d4489c4448"
+build_start_time: [1679001867, 539345026]
+build_end_time: [1679001867, 600381851]
+inputs:
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseFunctions/FirebaseFunctions/Sources/Callable+Codable.swift": !private [1678833929, 778587341]
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseFunctions/FirebaseFunctions/Sources/Functions.swift": !private [1678833929, 777660846]
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseFunctions/FirebaseFunctions/Sources/FunctionsError.swift": !private [1678833929, 777467250]
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseFunctions/FirebaseFunctions/Sources/HTTPSCallable.swift": !private [1678833929, 777325630]
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseFunctions/FirebaseFunctions/Sources/Internal/FunctionsComponent.swift": !private [1678833929, 778357982]
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseFunctions/FirebaseFunctions/Sources/Internal/FunctionsContext.swift": !private [1678833929, 777976512]
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseFunctions/FirebaseFunctions/Sources/Internal/FunctionsSerializer.swift": !private [1678833929, 778123855]

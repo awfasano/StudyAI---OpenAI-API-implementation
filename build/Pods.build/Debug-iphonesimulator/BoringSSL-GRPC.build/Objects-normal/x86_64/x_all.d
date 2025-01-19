@@ -1,0 +1,43 @@
+dependencies: \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/crypto/x509/x_all.c \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/Target\ Support\ Files/BoringSSL-GRPC/BoringSSL-GRPC-prefix.pch \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/x509.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/asn1.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/base.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/is_boringssl.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/opensslconf.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/boringssl_prefix_symbols.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/bio.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/buffer.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/buf.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/err.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/ex_data.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/stack.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/type_check.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/thread.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/bn.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/cipher.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/dh.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/dsa.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/engine.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/ec.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/ec_key.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/ecdh.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/ecdsa.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/evp.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/evp_errors.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/aead.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/base64.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/digest.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/nid.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/obj.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/bytestring.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/span.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/pkcs7.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/pool.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/rsa.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/sha.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/mem.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/crypto/x509/internal.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/crypto/x509/../asn1/internal.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/BoringSSL-GRPC/src/include/openssl/asn1t.h

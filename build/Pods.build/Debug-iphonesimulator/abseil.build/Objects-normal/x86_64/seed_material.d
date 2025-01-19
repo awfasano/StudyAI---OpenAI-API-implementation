@@ -1,0 +1,45 @@
+dependencies: \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/random/internal/seed_material.cc \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/Target\ Support\ Files/abseil/abseil-prefix.pch \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/random/internal/seed_material.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/attributes.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/config.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/options.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/policy_checks.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/random/internal/fast_uniform_bits.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/meta/type_traits.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/types/optional.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/utility/utility.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/internal/inline_variable.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/internal/identity.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/internal/invoke.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/types/bad_optional_access.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/types/internal/optional.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/memory/memory.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/macros.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/optimization.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/port.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/types/span.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/internal/throw_delegate.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/types/internal/span.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/algorithm/algorithm.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/dynamic_annotations.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/internal/dynamic_annotations.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/internal/raw_logging.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/internal/atomic_hook.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/base/log_severity.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/ascii.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/string_view.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/escaping.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/str_join.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/internal/str_join_internal.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/internal/ostringstream.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/internal/resize_uninitialized.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/str_cat.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/numbers.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/numeric/bits.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/numeric/internal/bits.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/numeric/int128.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/numeric/int128_have_intrinsic.inc \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/strip.h \
+  /Users/anthonyfasano/Desktop/StudyAI/Pods/abseil/absl/strings/match.h

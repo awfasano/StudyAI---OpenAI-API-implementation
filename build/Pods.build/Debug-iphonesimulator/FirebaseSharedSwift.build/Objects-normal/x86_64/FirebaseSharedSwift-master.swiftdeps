@@ -1,0 +1,9 @@
+version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
+options: "cd1a75215ffdf119cf400b89ae0e7ea4af49468f33fd9f86801ac3529bb64ce1"
+build_start_time: [1679001867, 419609069]
+build_end_time: [1679001867, 483108043]
+inputs:
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseSharedSwift/FirebaseSharedSwift/Sources/FirebaseRemoteConfigValueDecoding.swift"
+  : !private [1678833980, 802562713]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseSharedSwift/FirebaseSharedSwift/Sources/third_party/FirebaseDataEncoder/FirebaseDataEncoder.swift"
+  : !private [1678833980, 802370071]

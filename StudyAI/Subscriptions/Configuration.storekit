@@ -1,0 +1,102 @@
+{
+  "identifier" : "3792613E",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "6447783795",
+      "localizations" : [
+        {
+          "description" : "Buy tokens to use with ChatGPT",
+          "displayName" : "$2.99 of Tokens",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.waitedco.StudyAI.buy3tokens",
+      "referenceName" : "3dollarstokens",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6447424277",
+    "_developerTeamID" : "P2HHS9CUR6",
+    "_lastSynchronizedDate" : 703247669.10254502
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21305888",
+      "localizations" : [
+
+      ],
+      "name" : "3dollarSubscription",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6447424312",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Get one dollar of GPT4 and GPT3.5 tokens",
+              "displayName" : "One Dollar Subscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "1dollarSub",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "One Dollar Subscription",
+          "subscriptionGroupID" : "21305888",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    },
+    {
+      "id" : "21316634",
+      "localizations" : [
+
+      ],
+      "name" : "Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6447718553",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "5 dollars worth of tokens to use with GPT ",
+              "displayName" : "Premium Subscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.waitedco.StudyAI.premium",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Subscription",
+          "subscriptionGroupID" : "21316634",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}

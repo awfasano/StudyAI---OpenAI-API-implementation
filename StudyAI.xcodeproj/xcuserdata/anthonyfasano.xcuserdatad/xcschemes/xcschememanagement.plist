@@ -7,7 +7,25 @@
 		<key>StudyAI.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>36</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>9E4B86A529C0F32A0041C047</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9E4B86BB29C0F32C0041C047</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9E4B86C529C0F32C0041C047</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

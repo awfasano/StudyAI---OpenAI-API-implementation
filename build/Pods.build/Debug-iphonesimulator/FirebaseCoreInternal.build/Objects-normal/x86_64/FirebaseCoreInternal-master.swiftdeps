@@ -1,0 +1,24 @@
+version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
+options: "a0950c86c60e93642412026c095923cb56ae199ff7b3b1a86a1a292564343b05"
+build_start_time: [1678993878, 280166149]
+build_end_time: [1678993878, 386880874]
+inputs:
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/Heartbeat.swift": !private [1678833886, 946758270]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatController.swift"
+  : !private [1678833886, 947175979]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatStorage.swift"
+  : !private [1678833886, 947508811]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatsBundle.swift"
+  : !private [1678833886, 947654485]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatsPayload.swift"
+  : !private [1678833886, 947937965]
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/RingBuffer.swift": !private [1678833886, 946898937]
+  "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/Storage.swift": !private [1678833886, 946610450]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/StorageFactory.swift"
+  : !private [1678833886, 948075771]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/WeakContainer.swift"
+  : !private [1678833886, 947793960]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/_ObjC_HeartbeatController.swift"
+  : !private [1678833886, 947039127]
+  ? "/Users/anthonyfasano/Desktop/StudyAI/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/_ObjC_HeartbeatsPayload.swift"
+  : !private [1678833886, 947359323]

@@ -8,13 +8,15 @@ let MessageService = _MessageService()
 
 final class _MessageService {
 
-    // TODO: Complete chat functionality implementation.
-    // This service should handle sending messages to the OpenAI API
-    // via the "getMessages" Cloud Function and managing chat history.
-
-    func callOpenAIAPI(data: [String: Any], completion: @escaping (Result<[String: Any], Error>) -> Void) {
+    func sendMessage(messages: [[String: String]], completion: @escaping (Result<[String: Any], Error>) -> Void) {
         let funcGetData = Functions.functions().httpsCallable("getMessages")
-        funcGetData.timeoutInterval = 300000
+        funcGetData.timeoutInterval = 300
+
+        let data: [String: Any] = [
+            "messages": messages,
+            "max_tokens": 2000,
+            "model": "gpt-4",
+        ]
 
         funcGetData.call(data) { result, error in
             if let error = error {

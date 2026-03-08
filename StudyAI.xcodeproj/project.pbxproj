@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		022F90434EDA5682614CA21F /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D686161A2C8056705C6B986A /* AppConfig.swift */; };
 		24A5902998171CF5EA4AA688 /* Pods_StudyAI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C30A27B5DEE6417DEBD99A2 /* Pods_StudyAI.framework */; };
 		323D162ADCA8004847ACE1CA /* Pods_StudyAITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F766E3057D9F64841BE59789 /* Pods_StudyAITests.framework */; };
+		62AC48494C02E6F561A39F8F /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 29ACC182D6F7164F955429BC /* Config.plist */; };
 		6DB1C1CCFB5F0B596808217A /* Pods_StudyAI_StudyAIUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F4EBCAF45F42310B3C60A55 /* Pods_StudyAI_StudyAIUITests.framework */; };
 		9E1C4EB129EA74420089D48C /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 9E1C4EB029EA74420089D48C /* StoreKitTestCertificate.cer */; };
 		9E1C4EB329EDCA820089D48C /* FixGrammarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1C4EB229EDCA820089D48C /* FixGrammarViewController.swift */; };
@@ -85,6 +87,7 @@
 		9EFE9AE129D2CD02000E1C24 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EFE9AE029D2CD02000E1C24 /* DocumentService.swift */; };
 		9EFE9AE229D2CD02000E1C24 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EFE9AE029D2CD02000E1C24 /* DocumentService.swift */; };
 		9EFE9AE329D2CD02000E1C24 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EFE9AE029D2CD02000E1C24 /* DocumentService.swift */; };
+		F3107F0BF46A2D81E7DBB761 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB6599E6BCF2913DA5F66ECB /* KeychainHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +109,7 @@
 
 /* Begin PBXFileReference section */
 		23E92CF348FFD9B913D26EFB /* Pods-StudyAI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StudyAI.release.xcconfig"; path = "Target Support Files/Pods-StudyAI/Pods-StudyAI.release.xcconfig"; sourceTree = "<group>"; };
+		29ACC182D6F7164F955429BC /* Config.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		5F4EBCAF45F42310B3C60A55 /* Pods_StudyAI_StudyAIUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StudyAI_StudyAIUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		935642CE64F7E12A0A573CDD /* Pods-StudyAI-StudyAIUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StudyAI-StudyAIUITests.debug.xcconfig"; path = "Target Support Files/Pods-StudyAI-StudyAIUITests/Pods-StudyAI-StudyAIUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		98AB862C195F82070B224BF0 /* Pods-StudyAITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StudyAITests.debug.xcconfig"; path = "Target Support Files/Pods-StudyAITests/Pods-StudyAITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -181,8 +185,10 @@
 		9EFE9AE029D2CD02000E1C24 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DocumentService.swift; path = StudyAI/Helpers/DocumentService.swift; sourceTree = SOURCE_ROOT; };
 		C6FDBBA53F8C4B0CCE45B299 /* Pods-StudyAI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StudyAI.debug.xcconfig"; path = "Target Support Files/Pods-StudyAI/Pods-StudyAI.debug.xcconfig"; sourceTree = "<group>"; };
 		D2B4E8ACA9A32D0FC1D37775 /* Pods-StudyAITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StudyAITests.release.xcconfig"; path = "Target Support Files/Pods-StudyAITests/Pods-StudyAITests.release.xcconfig"; sourceTree = "<group>"; };
+		D686161A2C8056705C6B986A /* AppConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		F4F5435DDC388B42C7FF3257 /* Pods-StudyAI-StudyAIUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StudyAI-StudyAIUITests.release.xcconfig"; path = "Target Support Files/Pods-StudyAI-StudyAIUITests/Pods-StudyAI-StudyAIUITests.release.xcconfig"; sourceTree = "<group>"; };
 		F766E3057D9F64841BE59789 /* Pods_StudyAITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StudyAITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB6599E6BCF2913DA5F66ECB /* KeychainHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -281,6 +287,7 @@
 				9E4B86B229C0F32C0041C047 /* Assets.xcassets */,
 				9E4B86B429C0F32C0041C047 /* LaunchScreen.storyboard */,
 				9E4B86B729C0F32C0041C047 /* Info.plist */,
+				29ACC182D6F7164F955429BC /* Config.plist */,
 			);
 			path = StudyAI;
 			sourceTree = "<group>";
@@ -386,6 +393,8 @@
 				9EAD63C429C41BA1005B4282 /* Extensions.swift */,
 				9EFE9ADA29D2BF81000E1C24 /* objects.swift */,
 				9EDC765829C185B200E8EA86 /* CustomTableViewCell.swift */,
+				FB6599E6BCF2913DA5F66ECB /* KeychainHelper.swift */,
+				D686161A2C8056705C6B986A /* AppConfig.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -541,6 +550,7 @@
 				9E30D3FC2A5DCD9F00FC08C0 /* grammar.jpg in Resources */,
 				9E30D3FE2A5DCD9F00FC08C0 /* firstalt.jpg in Resources */,
 				9E30D4002A5DCD9F00FC08C0 /* dynamic.jpg in Resources */,
+				62AC48494C02E6F561A39F8F /* Config.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -707,6 +717,8 @@
 				9E9E0D3A29DCD29D003BAE4C /* DocumentViewController.swift in Sources */,
 				9EDC765D29C1B3BB00E8EA86 /* MainViewController.swift in Sources */,
 				9EAD63C529C41BA1005B4282 /* Extensions.swift in Sources */,
+				F3107F0BF46A2D81E7DBB761 /* KeychainHelper.swift in Sources */,
+				022F90434EDA5682614CA21F /* AppConfig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,18 +1,3 @@
-//
-//  MessageService.swift
-//  StudyAI
-//
-//  Created by Anthony Fasano on 7/17/23.
-//
-
-//
-//  UserServices.swift
-//  StudyAI
-//
-//  Created by Anthony Fasano on 3/16/23.
-//
-
-
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
@@ -21,24 +6,24 @@ import FirebaseFunctions
 
 let MessageService = _MessageService()
 
-
-var messages = [MessageType]()
-
-var data:[String:Any] = [:]
-
 final class _MessageService {
-    
-    func callOpenAIAPI(data: [String:Any]) {
+
+    // TODO: Complete chat functionality implementation.
+    // This service should handle sending messages to the OpenAI API
+    // via the "getMessages" Cloud Function and managing chat history.
+
+    func callOpenAIAPI(data: [String: Any], completion: @escaping (Result<[String: Any], Error>) -> Void) {
         let funcGetData = Functions.functions().httpsCallable("getMessages")
         funcGetData.timeoutInterval = 300000
 
-        
-        //let data1 : [String: Any] = [
-            //"message" : str, "model":gptType, "max_tokens":maxTokens, "system":system]
+        funcGetData.call(data) { result, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            if let dict = result?.data as? [String: Any] {
+                completion(.success(dict))
+            }
+        }
     }
-    
-    
-    
-    
 }
-

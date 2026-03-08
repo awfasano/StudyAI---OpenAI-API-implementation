@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         FirebaseApp.configure()
-        Purchases.configure(withAPIKey: "appl_aiSvbIOaINlPiAzbBObXyNZfbAb")
+        Purchases.configure(withAPIKey: AppConfig.revenueCatAPIKey)
         
         ApplicationDelegate.shared.application(
                    application,

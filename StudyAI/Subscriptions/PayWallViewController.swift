@@ -77,16 +77,11 @@ class PayWallViewController: UIViewController {
     
     @objc private func didTapBuyTokens() {
         //revenue cat
-        print("enter did tap")
-
-
         IAPManager.shared.fetchPackages { package in
             guard let package = package else {
                 return
             }
-            print("enter first stage")
             IAPManager.shared.buyTokens(package: package) { success in
-                print("purchase: \(success)")
                 if success {
                     let db = Firestore.firestore()
                     let ref = db.collection("users").document(UserService.user.id)

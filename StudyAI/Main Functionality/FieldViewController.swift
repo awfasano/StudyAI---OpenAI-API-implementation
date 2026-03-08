@@ -40,8 +40,10 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
         guard let subjectCell = subject else {
                 return CustomTableViewCell()
             }
-        let cell:CustomTableViewCell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomTableViewCell
-        
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else {
+            return UITableViewCell()
+        }
+
         let view = UIView()
         view.layer.cornerRadius = 0
 
@@ -77,7 +79,6 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
             cell.selectedBackgroundView = view
 
         default:
-            print("error")
         }
         
         
@@ -95,12 +96,11 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return fields[subject!]?.count ?? 0
+        return fields[subject ?? ""]?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-        let cell:CustomTableViewCell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomTableViewCell
-        selectedField = fields[subject!]?[indexPath.section]
+        selectedField = fields[subject ?? ""]?[indexPath.section]
     
     }
     
@@ -129,14 +129,14 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         
         if(segue.identifier == "toMain"){
-            let viewcontroller = segue.destination as! MainViewController
+            guard let viewcontroller = segue.destination as? MainViewController else { return }
             viewcontroller.subject = subject
             viewcontroller.field = selectedField
             viewcontroller.uiColor = uiColor
 
         }
         else if(segue.identifier == "tofixGrammar") {
-            let viewcontroller = segue.destination as! FixGrammarViewController
+            let _ = segue.destination as? FixGrammarViewController
         }
     }
 

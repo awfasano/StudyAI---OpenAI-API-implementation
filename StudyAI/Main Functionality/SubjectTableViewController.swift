@@ -34,8 +34,6 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
             return
         }
         
-        print(userAuth.isEmailVerified)
-        print(userAuth.email)
 
                 
         if !userAuth.isEmailVerified && !UserService.user.receivedTokens {
@@ -83,7 +81,7 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:CustomTableViewCell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomTableViewCell
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else { return UITableViewCell() }
 
         //cell.frame = CGRectMake(0, 0, tableView.frame.size.width-10, cell.frame.size.height)
         
@@ -154,7 +152,6 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
             cell.layer.borderColor = color?.cgColor
             
         default:
-            print("error")
         }
         return cell
     }
@@ -169,12 +166,12 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell:CustomTableViewCell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomTableViewCell
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else { return UITableViewCell() }
         performSegue(withIdentifier: "toFields", sender: self)
     }
     
     func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-        let cell:CustomTableViewCell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomTableViewCell
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else { return UITableViewCell() }
         
 
         
@@ -194,7 +191,7 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "toFields"){
-            let viewcontroller = segue.destination as! FieldViewController
+            guard let viewcontroller = segue.destination as? FieldViewController else { return }
             viewcontroller.subject = selectedSubject
             viewcontroller.uiColor = colors[selectedSubject ?? ""]
 

@@ -58,11 +58,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             return cell
         }
        else if indexPath.row == 3 {
-           print(indexPath.row)
            if Auth.auth().currentUser?.isEmailVerified ?? false {
-               print("do i enter here?")
                let setting = "Email is already Verified"
-               print(setting)
                var config = UIListContentConfiguration.cell()
                config.text = setting
                cell.isUserInteractionEnabled = false
@@ -73,7 +70,6 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                return cell
            }
            else {
-               print("or here")
 
                let setting = "Please Verify Email Address"
                var config = UIListContentConfiguration.cell()
@@ -86,7 +82,6 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         else{
             guard let setting = settings[settingsKeys[indexPath.section]]?[indexPath.row] else{
-                print("or here")
 
                 return cell
             }
@@ -102,14 +97,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(section)
-        print(settingsKeys)
-        print(settings)
         return settings[settingsKeys[section]]?.count ?? 0
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        print("settings sections")
-        print(settings.keys.count)
         return settings.keys.count
     }
     
@@ -153,11 +143,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                 promptForAnswerWithPassword(fieldUpdating: "Password", field: "password", type: "delete", title: "Enter Email and Password to Delete your Account")
                 
             default:
-                print("error")
+                break
             }
-        }
-        else {
-            
         }
     }
     
@@ -186,12 +173,12 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         let indicator = Indicator()
         indicator.showIndicator()
             do { try Auth.auth().signOut()}
-            catch { print("already logged out") }
+            catch { }
         indicator.hideIndicator(completion: nil)
         let story = UIStoryboard(name: "Main", bundle:nil)
         let vc = story.instantiateViewController(withIdentifier: "firstVC")
         
-        if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 15, minorVersion: 0, patchVersion: 0)) {
+        if #available(iOS 15, *) {
             UIApplication
                 .shared
                 .connectedScenes
@@ -219,7 +206,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         let submitAction = UIAlertAction(title: "Submit", style: .default) { [unowned ac] _ in
-            let answer = ac.textFields![0]
+            let answer = ac.textFields?[0]
             
             let trimmedAnswer = answer.text?.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -289,13 +276,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             var trimmedAnswerPassword:String?
 
             if ac.textFields?.count ?? 0 > 1 {
-                let answer = ac.textFields![0]
-                let answer1 = ac.textFields![1]
+                let answer = ac.textFields?[0]
+                let answer1 = ac.textFields?[1]
                 trimmedAnswer = answer.text?.trimmingCharacters(in: .whitespacesAndNewlines)
                 trimmedAnswerPassword = answer1.text?.trimmingCharacters(in: .whitespacesAndNewlines)
             }
             else {
-                let answer = ac.textFields![0]
+                let answer = ac.textFields?[0]
                 trimmedAnswerPassword = answer.text?.trimmingCharacters(in: .whitespacesAndNewlines)
             }
 
@@ -323,10 +310,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                             
                             Auth.auth().currentUser?.updateEmail(to: trimmedAnswer!) { (error) in
                                 if let error = error {
-                                    print("this is the trimmed email")
-                                    print(error.localizedDescription)
 
-                                    print(trimmedAnswer)
                                     indicator.hideIndicator {
                                         self.displayAlertviewController(title: "Error", msg: error.localizedDescription)
                                     }

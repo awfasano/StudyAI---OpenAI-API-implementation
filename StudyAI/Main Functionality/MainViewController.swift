@@ -26,7 +26,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             self.present(alertController, animated: true, completion: nil)
         }
         else {
-            print("do i hide here??")
+    
         }
     }    
     @IBOutlet weak var scrollView: UIScrollView!
@@ -168,7 +168,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                                     self.hideActivityIndicator()
                                 }
                                 else {
-                                        print("third last else")
                                     self.hideActivityIndicator()
 
                                 }
@@ -177,19 +176,16 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                     else {
                         self.hideActivityIndicator()
 
-                        print("second last else")
                     }
                 }
             }
         }
             else {
-                    print("last else")
                     self.setupInterface()
             }
     }
     
     func createHTML(content:String) {
-        print(content)
         
         let webView1 = WKWebView()
         webView1.navigationDelegate = self
@@ -198,7 +194,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        print("in did finish???")
 
         
         webView.evaluateJavaScript("document.readyState", completionHandler: { (complete, error) in
@@ -230,7 +225,9 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         // get a reference to our storyboard cell
-        let cell =  self.collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! QuestionTypesCollectionViewCell
+        guard let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? QuestionTypesCollectionViewCell else {
+            return UICollectionViewCell()
+        }
 
         let dicKeys = Array(useDictionary.keys)
         keys = dicKeys
@@ -277,9 +274,9 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             cell.selectedBackgroundView = view
             
         default:
-            print("error")
+            break
         }
-        
+
         return cell
     }
     
@@ -294,7 +291,8 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     @objc func keyboardWillShow(notification:NSNotification) {
 
         guard let userInfo = notification.userInfo else { return }
-        var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        guard let keyboardValue = userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue else { return }
+        var keyboardFrame: CGRect = keyboardValue.cgRectValue
         keyboardFrame = self.view.convert(keyboardFrame, from: nil)
 
         var contentInset:UIEdgeInsets = self.scrollView.contentInset
@@ -324,7 +322,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
 
     func makeCallToOpenAI(str:String, system:String){
-        print(system)
         let tokenQuestions = Int(Double(str.count)/4.0)
         var maxTokens = UserService.user.tokensRemaining-tokenQuestions
         
@@ -350,7 +347,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         
         let data : [String: Any] = [
             "message" : str, "model":gptType, "max_tokens":maxTokens, "system":system]
-        print(system)
         
         let indicator = Indicator()
         indicator.alert.title = "Can take up to 90 minutes for dynamic content."
@@ -361,7 +357,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                 
         funcGetData.call(data) { (result, error) in
             if let error = error {
-                debugPrint(error.localizedDescription)
                 indicator.hideIndicator {
                     let cancel = UIAlertAction(title: "cancel", style: .cancel){ (action) in
                     }
@@ -381,8 +376,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                 if let dict = result?.data as? [String:Any] {
                     //print(dict)
                     
-                    print("max tokens")
-                    print(dict)
                     
                     
                     guard let exists = dict["info"] as? [String:Any], let max_tokens = dict["max_tokens"] as? Int else{
@@ -426,7 +419,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
 
                         }
                         else {
-                            print("success")
                         }
                     }
                             
@@ -437,18 +429,17 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                     }
                     
                     if str.contains("Write five multiple choice questions about") || str.contains("flashcards"){
-                        print("do i got into HTML")
                         self.createHTML(content:content)
-                        DocumentService.putDocument(subject: self.subject!, field: self.field!, text: content, question: str, docType: "html",questionType: self.questionTypesForDatabse ?? "", questionTopic: self.textField.text ?? "", indicator: indicator)
+                        DocumentService.putDocument(subject: self.subject ?? "", field: self.field ?? "", text: content, question: str, docType: "html",questionType: self.questionTypesForDatabse ?? "", questionTopic: self.textField.text ?? "", indicator: indicator)
                     }
                     else if str.contains("MathJax") {
                         self.createRichTextView(content:content)
-                        DocumentService.putDocument(subject: self.subject!, field: self.field!, text: content, question: str, docType: "Latex",questionType: self.questionTypesForDatabse ?? "", questionTopic: self.textField.text ?? "", indicator: indicator)
+                        DocumentService.putDocument(subject: self.subject ?? "", field: self.field ?? "", text: content, question: str, docType: "Latex",questionType: self.questionTypesForDatabse ?? "", questionTopic: self.textField.text ?? "", indicator: indicator)
                         
                     }
                     else {
                         self.createTextField(content: content)
-                        DocumentService.putDocument(subject: self.subject!, field: self.field!, text: content, question: str, docType: "txt",questionType: self.questionTypesForDatabse ?? "", questionTopic: self.textField.text ?? "", indicator: indicator)
+                        DocumentService.putDocument(subject: self.subject ?? "", field: self.field ?? "", text: content, question: str, docType: "txt",questionType: self.questionTypesForDatabse ?? "", questionTopic: self.textField.text ?? "", indicator: indicator)
                         
                     }
                 }
@@ -509,7 +500,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        print("While entering the characters this method gets called")
         return true;
     }
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -583,68 +573,53 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     
     @IBAction func buttonOnTap(_ sender: Any) {
-        print(canSubmit)
-        print(canSubmit)
 
         if typeOfQuestion != nil {
             if canSubmit {
                 var str = ""
                 
-                switch typeOfQuestion?.count{
+                let currentField = field ?? ""
+                let currentSubject = subject ?? ""
+                let questions = typeOfQuestion ?? []
+
+                switch questions.count {
                 case 0:
-                    str = "On the topic of \(field!): \(textField.text ?? "")"
+                    str = "On the topic of \(currentField): \(textField.text ?? "")"
                     question = str
                     systemString = " "
-                    
-                    if subject!.elementsEqual("Math") || field!.elementsEqual("Physics"){
-                                                
-                        systemString = " for inline formulas you use either a dollar sign $. To end the inline math, you have another dollar sign. Don't write the word MathJax in the solution"
-                        
-                        print("am I in system string flashcard")
-                    }
-                    
-                case 1:
-                    
-                    if typeOfQuestion![0].contains("Write five multiple choice questions about "){
-                        systemString = mcString
-                        print("am I in system string multiple choice")
-                    }
-                    else if typeOfQuestion![0].contains("Write five flashcards about "){
-                        systemString = flashcardString
-                        print("am I in system string flashcard")
-                    }
-                    else if subject!.elementsEqual("Math") || field!.elementsEqual("Physics"){
-                                                
-                        systemString = " for inline formulas you use either a dollar sign $. To end the inline math, you have another dollar sign. Don't write the word MathJax in the solution"
 
-                        print("am I in system string flashcard")
+                    if currentSubject == "Math" || currentField == "Physics" {
+                        systemString = " for inline formulas you use either a dollar sign $. To end the inline math, you have another dollar sign. Don't write the word MathJax in the solution"
                     }
-                    
-                    else {
+
+                case 1:
+                    if questions[0].contains("Write five multiple choice questions about ") {
+                        systemString = mcString
+                    } else if questions[0].contains("Write five flashcards about ") {
+                        systemString = flashcardString
+                    } else if currentSubject == "Math" || currentField == "Physics" {
+                        systemString = " for inline formulas you use either a dollar sign $. To end the inline math, you have another dollar sign. Don't write the word MathJax in the solution"
+                    } else {
                         systemString = " "
                     }
-                    str = "On the topic of \(field!): \(typeOfQuestion![0]) \(textField.text ?? "")"
+                    str = "On the topic of \(currentField): \(questions[0]) \(textField.text ?? "")"
                     question = str
 
                 case 2:
-                    str = "On the topic of \(field!): \(typeOfQuestion![0]) \(textField.text ?? "") \(typeOfQuestion![1])"
+                    str = "On the topic of \(currentField): \(questions[0]) \(textField.text ?? "") \(questions[1])"
                     question = str
                     systemString = " "
-                    if subject!.elementsEqual("Math") || field!.elementsEqual("Physics"){
-                                                
+                    if currentSubject == "Math" || currentField == "Physics" {
                         systemString = " for inline formulas you use either a dollar sign $. To end the inline math, you have another dollar sign. Don't write the word MathJax in the solution"
-
-                        print("am I in system string flashcard")
                     }
 
                 default:
-                    str = "On the topic of \(field): \(textField.text ?? "")"
+                    str = "On the topic of \(currentField): \(textField.text ?? "")"
                     question = str
                     systemString = " "
                 }
                 
                 makeCallToOpenAI(str: str, system: systemString)
-                print("am I in system string flashcard")
 
         }
             else {
@@ -671,7 +646,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toPaywallVC" {
-            let viewcontroller = segue.destination as! PayWallViewController
+            guard let viewcontroller = segue.destination as? PayWallViewController else { return }
             viewcontroller.segueID = "unwindToMain"
         }
     }
@@ -702,7 +677,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     @IBAction func unwindToMain(segue: UIStoryboardSegue){
-        print("do i enter main")
         let tokensFormatted = DocumentService.formatNumber(UserService.user.tokensRemaining)
          tokensButton.setTitle("Tokens: \(tokensFormatted)", for: .normal)
         }

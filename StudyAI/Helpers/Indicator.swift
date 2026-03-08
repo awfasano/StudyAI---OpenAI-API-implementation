@@ -72,7 +72,6 @@ public class Indicator {
                 //viewController.view.addSubview(self.indicatorImage)
                 //viewController.view.addSubview(self.label)
                 
-                print("in show indicator")
             }
         })
     }
@@ -80,7 +79,6 @@ public class Indicator {
 
         DispatchQueue.main.async( execute:
                                     {
-            print("hide indicator")
             self.alert.dismiss(animated: true) {
                 self.blurEffectView.removeFromSuperview()
                 completion?()

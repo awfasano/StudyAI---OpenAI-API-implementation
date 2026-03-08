@@ -41,8 +41,6 @@ class PastCallsViewController: UIViewController, UITableViewDelegate, UITableVie
         
         var config = UIListContentConfiguration.cell()
         
-        print("in cell for row at")
-        print(fields)
         
         config.text = fields
         //config.secondaryText = ""
@@ -82,7 +80,7 @@ class PastCallsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "toPastQuestionsView"){
-            let viewcontroller = segue.destination as! PastDocumentListViewController
+            guard let viewcontroller = segue.destination as? PastDocumentListViewController else { return }
             viewcontroller.subject = selectedSubject
             viewcontroller.field = selectedField
         }

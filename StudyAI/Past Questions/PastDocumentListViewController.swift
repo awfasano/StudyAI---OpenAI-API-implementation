@@ -32,13 +32,9 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
         }
         else {
             
-            print(subject)
-            print(field)
             
             docTypesArray = DocumentService.fields[subject ?? ""]?[field ?? ""] ?? []
             
-            print(docTypesArray.count)
-            print(docTypesArray)
             
             if docTypesArray.count == 0 && DocumentService.updated {
                 let alertController = UIAlertController(title: "No Questions for this subject!", message: "Asks some questions on this field to access the this view.", preferredStyle: .alert)
@@ -51,18 +47,15 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
             }
             
             let questionTypeHandler: UIActionHandler = { [self] action in
-                print(action.title)
                 sorting = "questionType"
                 sortingMech(criteria: sorting)
                 
             }
             let questionTopicHandler: UIActionHandler = { [self] action in
-                print(action.title)
                 sorting = "questionTopic"
                 sortingMech(criteria: sorting)
             }
             let dateHandler: UIActionHandler = { [self] action in
-                print(action.title)
                 sorting = "date"
                 sortingMech(criteria: sorting)
             }
@@ -115,7 +108,7 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "toDocument"){
-            let viewcontroller = segue.destination as! DocumentViewController
+            guard let viewcontroller = segue.destination as? DocumentViewController else { return }
             viewcontroller.docInformation = selectedDocInformation
         }
     }
@@ -147,8 +140,6 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
         if success{
             
             sortingMech(criteria: sorting)
-            print(docTypesArray.count)
-            print(docTypesArray)
             
             if docTypesArray.count == 0 {
                 let alertController = UIAlertController(title: "No Questions for this subject!", message: "Asks some questions on this field to access the this view.", preferredStyle: .alert)
@@ -184,7 +175,6 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
             docTypesArray = DocumentService.fields[subject ?? ""]?[field ?? ""]?.sorted(by: {
                 return $0.questionType < $1.questionType}) ?? []
         default:
-            print("Have you done something new?")
         }
         DocumentService.fields[subject ?? ""]?[field ?? ""] = docTypesArray
         tableView.reloadData()

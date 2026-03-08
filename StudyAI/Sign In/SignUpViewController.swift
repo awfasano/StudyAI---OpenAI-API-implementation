@@ -58,8 +58,8 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
             return "Please fill in all fields"
         }
         
-        let cleanedPassword = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        let cleanedPasswordConfirmed = confirmPasswordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanedPassword = (passwordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanedPasswordConfirmed = (confirmPasswordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         
 
         
@@ -91,10 +91,10 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
         }
         else{
             // Create cleaned version of the data
-            let firstName = firstNameTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-            let lastName = lastNameTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-            let email = emailTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-            let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+            let firstName = (firstNameTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let lastName = (lastNameTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let email = (emailTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let password = (passwordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             
             Auth.auth().createUser(withEmail: email, password: password) { (result, err) in
                 //check for erros
@@ -114,11 +114,11 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
                     _  = User.init(id: fireBaseUser?.uid ?? "", firstName: firstName, lastName: lastName, email: email)
                     
                     //I want to document id and the UID to be the same because its just easier
-                    let newUserRef =  db.collection("users").document(result!.user.uid)
+                    let newUserRef =  db.collection("users").document(result?.user.uid ?? "")
                     newUserRef.setData(["firstName": firstName,
                                         "lastName": lastName,
                                         "email": email,
-                                        "uid": result!.user.uid,
+                                        "uid": result?.user.uid ?? "",
                                         "stripeID": "",
                                         "subscribed":0,
                                         "tokensRemaining":0,
@@ -192,8 +192,8 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
     
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        let confirmPassword = confirmPasswordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        let password = (passwordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let confirmPassword = (confirmPasswordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
 
         if textField == confirmPasswordTextField ||  textField == passwordTextField{
             eightCharacters.isHidden = true
@@ -223,8 +223,8 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
       }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
-        let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        let confirmPassword = confirmPasswordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        let password = (passwordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let confirmPassword = (confirmPasswordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
 
         if textField == confirmPasswordTextField ||  textField == passwordTextField{
             if Utilities.isPasswordValid(password) {
@@ -272,7 +272,7 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
             eightCharacters.isHidden = false
             numberPass.isHidden = false
             specialCharacter.isHidden = false
-            let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+            let password = (passwordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             
             let decimalCharacters = CharacterSet.decimalDigits
             let decimalRange = password.rangeOfCharacter(from: decimalCharacters)
@@ -301,8 +301,8 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
     }
     
     func chan (_ textField: UITextField) {
-        let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        let confirmPassword = confirmPasswordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        let password = (passwordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let confirmPassword = (confirmPasswordTextField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
 
         if textField == confirmPasswordTextField ||  textField == passwordTextField{
             if Utilities.isPasswordValid(password) {
@@ -334,7 +334,7 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
     //transitioning to the tabVC for the normal home view controller
     func transitionToHome(){
        let homeViewController = storyboard?.instantiateViewController(identifier: "MainVC")
-        if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 15, minorVersion: 0, patchVersion: 0)) {
+        if #available(iOS 15, *) {
             UIApplication
                 .shared
                 .connectedScenes

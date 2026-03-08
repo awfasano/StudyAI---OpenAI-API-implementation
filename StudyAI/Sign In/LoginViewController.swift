@@ -40,11 +40,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func forgtoButtonOnTap(_ sender: Any) {
-        let email = emailTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let emailText = emailTextField.text, !emailText.isEmpty else {
+            self.errorLabel.text = "Please enter your email address."
+            self.errorLabel.alpha = 1
+            return
+        }
+        let email = emailText.trimmingCharacters(in: .whitespacesAndNewlines)
 
         let indicator = Indicator()
         indicator.showIndicator()
-        
+
         Auth.auth().sendPasswordReset(withEmail: email) { (err) in
             if let err = err {
                 indicator.hideIndicator {
@@ -65,9 +70,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func loginOnTap(_ sender: Any) {
-        let email = emailTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        let password = passwordTextField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+        guard let emailText = emailTextField.text, let passText = passwordTextField.text,
+              !emailText.isEmpty, !passText.isEmpty else {
+            self.errorLabel.text = "Please enter email and password."
+            self.errorLabel.alpha = 1
+            return
+        }
+        let email = emailText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let password = passText.trimmingCharacters(in: .whitespacesAndNewlines)
+
         // Signing in the user
         let indicator = Indicator()
         indicator.showIndicator()
@@ -113,5 +124,3 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     
 }
-//https://studyai-a9aaf.firebaseapp.com/__/auth/handler
-//aidcademy17514dahdah

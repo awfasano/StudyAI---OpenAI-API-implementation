@@ -38,7 +38,7 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
         case "txt":
             createTextField(content:docInfoNotNil.text)
         default:
-            print("error")
+            break
         }
         // Do any additional setup after loading the view.
     }
@@ -69,7 +69,6 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        print("in did finish???")
 
         
         webView.evaluateJavaScript("document.documentElement.scrollHeight") { (height, error) in
@@ -176,7 +175,6 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
         case "html":
             
             exportPDFHTML()
-            print("am i in markup")
             
         case "Latex":
 
@@ -211,13 +209,12 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
             let fmt = UISimpleTextPrintFormatter(text: docInfoNotNil.text)
             exportPDFText(fmt: fmt)
         default:
-            print("error")
+            break
         }
     }
     
     func exportPDFText(fmt: UISimpleTextPrintFormatter) {
         
-        print(fmt.text)
         // 2. Assign print formatter to UIPrintPageRenderer
         let render = UIPrintPageRenderer()
         render.addPrintFormatter(fmt, startingAtPageAt: 0)
@@ -240,10 +237,9 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
         
         // 5. Save PDF file
         guard let outputURL = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("output").appendingPathExtension("pdf")
-            else { fatalError("Destination URL not created") }
+            else { return }
         
         pdfData.write(to: outputURL, atomically: true)
-        print("open \(outputURL.path)")
         
         if FileManager.default.fileExists(atPath: outputURL.path){
             
@@ -259,7 +255,6 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
             present(activityViewController, animated: true, completion: nil)
         }
         else {
-            print("document was not found")
         }
     }
     
@@ -291,10 +286,9 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
         
         // 5. Save PDF file
         guard let outputURL = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("\(docInformation?.field ?? "")\(docInformation?.dateString ?? "output")").appendingPathExtension("pdf")
-            else { fatalError("Destination URL not created") }
+            else { return }
         
         pdfData.write(to: outputURL, atomically: true)
-        print("open \(outputURL.path)")
         
         if FileManager.default.fileExists(atPath: outputURL.path){
             
@@ -310,7 +304,6 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
             present(activityViewController, animated: true, completion: nil)
         }
         else {
-            print("document was not found")
         }
     }
 }

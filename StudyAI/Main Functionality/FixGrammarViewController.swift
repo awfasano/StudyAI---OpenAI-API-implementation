@@ -52,7 +52,8 @@ class FixGrammarViewController: UIViewController, UITextViewDelegate, reloadUser
     @objc func keyboardWillShow(notification:NSNotification) {
 
         guard let userInfo = notification.userInfo else { return }
-        var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        guard let keyboardValue = userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue else { return }
+        var keyboardFrame: CGRect = keyboardValue.cgRectValue
         keyboardFrame = self.view.convert(keyboardFrame, from: nil)
         var contentInset:UIEdgeInsets = self.scrollView.contentInset
         contentInset.bottom = keyboardFrame.size.height + 150
@@ -93,7 +94,6 @@ class FixGrammarViewController: UIViewController, UITextViewDelegate, reloadUser
         
         funcGetData.call(data) { (result, error) in
             if let error = error {
-                debugPrint(error.localizedDescription)
                 indicator.hideIndicator {
                     let cancel = UIAlertAction(title: "cancel", style: .cancel){ (action) in
                     }
@@ -108,15 +108,9 @@ class FixGrammarViewController: UIViewController, UITextViewDelegate, reloadUser
             else {
                 //print(result?.data)
                 if let dict = result?.data as? [String:Any] {
-                    print("inside dict")
-                    print(dict["info"])
-                    print(dict["max_tokens"])
 
-                    dict["info"]
                     
                     guard let exists = dict["info"] as? [String:Any], let max_tokens = dict["max_tokens"] as? Int else{
-                        print(dict)
-                        print("failing here")
 
                         indicator.hideIndicator(completion: nil)
                         return
@@ -150,22 +144,11 @@ class FixGrammarViewController: UIViewController, UITextViewDelegate, reloadUser
 
                         }
                         else {
-                            print("success")
                         }
                     }
-                    var prefixIndex = 10
-                    if content.count > 35 {
-                        prefixIndex = 35
-                    }
-                    else if content.count > 0{
-                        prefixIndex = content.count-1
-                    }
-                    
-                    let index = content.index(str.startIndex, offsetBy: prefixIndex)
-                    
-                    let prefix = content.prefix(upTo: index)
-                        print("did i make it to here")
-                        self.createTextView(content: content)
+                    let prefixIndex = min(35, max(0, content.count - 1))
+                    let prefix = String(content.prefix(prefixIndex))
+                    self.createTextView(content: content)
                     DocumentService.putDocument(subject: "English", field: "Grammar", text: content, question: str, docType: "txt",questionType: "Fix Grammar", questionTopic: "\(String(prefix))...", indicator: indicator)
                 }
             }
@@ -173,7 +156,6 @@ class FixGrammarViewController: UIViewController, UITextViewDelegate, reloadUser
     }
     
     func createTextView(content:String){
-        print("do i make the text view")
         textView.font = .systemFont(ofSize: 16)
         textView.text = content
         self.adjustUITextViewHeight(arg: textView)
@@ -228,13 +210,12 @@ class FixGrammarViewController: UIViewController, UITextViewDelegate, reloadUser
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toPaywallVC" {
-            let viewcontroller = segue.destination as! PayWallViewController
+            guard let viewcontroller = segue.destination as? PayWallViewController else { return }
             viewcontroller.segueID = "unwindToFix"
         }
     }
     
     @IBAction func unwindToFix(segue: UIStoryboardSegue){
-        print("do i enter main")
         let tokensFormatted = DocumentService.formatNumber(UserService.user.tokensRemaining)
          tokens.setTitle("Tokens: \(tokensFormatted)", for: .normal)
         

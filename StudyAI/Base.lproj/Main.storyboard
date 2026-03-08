@@ -98,7 +98,7 @@
                         <outlet property="signIn" destination="lz9-LZ-KQc" id="LZH-R6-t74"/>
                         <outlet property="signUp" destination="0hc-tT-BYr" id="Gah-Zv-rvp"/>
                         <segue destination="ru8-NJ-71C" kind="show" identifier="toSignIn" id="8yJ-q6-kjR"/>
-                        <segue destination="GbQ-y1-yBY" kind="show" identifier="toSignUpMethods" id="jyk-Rq-dE3"/>
+                        <segue destination="Jv3-CK-ltT" kind="show" identifier="toSignUp" id="jyk-Rq-dE3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wjD-9f-uEn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

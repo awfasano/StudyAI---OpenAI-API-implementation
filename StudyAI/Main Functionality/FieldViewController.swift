@@ -15,7 +15,7 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var uiColor:UIColor?
     var fields = ["Math":["Algebra", "Geometry", "Trigonometry","Calculus","Statistics and Probability"],
                   "Science":["Biology", "Chemistry", "Physics", "Earth Science", "Environmental Science"],
-                  "Social Sciences":["Macroeconomics", "Microeconomics", "Pyschology", "Government", "Geography"],
+                  "Social Sciences":["Macroeconomics", "Microeconomics", "Psychology", "Government", "Geography"],
                   "History":["US History", "European History","World History", "Art History"],
                   "English":["Poetry", "Essays", "Grammar"]
     ]

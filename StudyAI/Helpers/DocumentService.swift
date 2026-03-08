@@ -20,13 +20,13 @@ final class _DocumentService {
     var fields: [String: [String: [docInfo]]] = [
         "Math": ["Algebra": [], "Geometry": [], "Trigonometry": [], "Calculus": [], "Statistics and Probability": []],
         "Science": ["Biology": [], "Chemistry": [], "Physics": [], "Earth Science": [], "Environmental Science": []],
-        "Social Sciences": ["Macroeconomics": [], "Microeconomics": [], "Pyschology": [], "Government": [], "Geography": []],
+        "Social Sciences": ["Macroeconomics": [], "Microeconomics": [], "Psychology": [], "Government": [], "Geography": []],
         "History": ["US History": [], "European History": [], "World History": [], "Art History": []],
         "English": ["Poetry": [], "Essays": [], "Grammar": []],
-        "Foriegn Languages": ["Spanish": [], "French": [], "Japanese": [], "Chinese": [], "German": [], "Korean": []]
+        "Foreign Languages": ["Spanish": [], "French": [], "Japanese": [], "Chinese": [], "German": [], "Korean": []]
     ]
 
-    var keysFields = ["Math", "Science", "Social Sciences", "History", "English", "Foriegn Languages"]
+    var keysFields = ["Math", "Science", "Social Sciences", "History", "English", "Foreign Languages"]
     var delegate: reloadDelegate?
     var listener: ListenerRegistration?
 
@@ -51,13 +51,13 @@ final class _DocumentService {
             self.fields = [
                 "Math": ["Algebra": [], "Geometry": [], "Trigonometry": [], "Calculus": [], "Statistics and Probability": []],
                 "Science": ["Biology": [], "Chemistry": [], "Physics": [], "Earth Science": [], "Environmental Science": []],
-                "Social Sciences": ["Macroeconomics": [], "Microeconomics": [], "Pyschology": [], "Government": [], "Geography": []],
+                "Social Sciences": ["Macroeconomics": [], "Microeconomics": [], "Psychology": [], "Government": [], "Geography": []],
                 "History": ["US History": [], "European History": [], "World History": [], "Art History": []],
                 "English": ["Poetry": [], "Essays": [], "Grammar": []],
-                "Foriegn Languages": ["Spanish": [], "French": [], "Japanese": [], "Chinese": [], "German": [], "Korean": []]
+                "Foreign Languages": ["Spanish": [], "French": [], "Japanese": [], "Chinese": [], "German": [], "Korean": []]
             ]
 
-            self.keysFields = ["Math", "Science", "Social Sciences", "History", "English", "Foriegn Languages"]
+            self.keysFields = ["Math", "Science", "Social Sciences", "History", "English", "Foreign Languages"]
 
             if let _ = error {
                 self.delegate?.reload(success: false)

@@ -34,7 +34,7 @@ class FirstViewController: UIViewController {
     */
 
     @IBAction func signUpOnTap(_ sender: Any) {
-        performSegue(withIdentifier: "toSignUpMethods", sender: self)
+        performSegue(withIdentifier: "toSignUp", sender: self)
     }
     
     

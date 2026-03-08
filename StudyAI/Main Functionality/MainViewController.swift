@@ -49,7 +49,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     @IBOutlet weak var toggleGPTType: UIBarButtonItem!
     var switchCase = ""
     @IBOutlet weak var textStackView: UIStackView!
-    var gptType = "gpt-3.5-turbo"
+    var gptType = "gpt-4o-mini"
     var activityView: UIActivityIndicatorView?
 
     let indicatorInitial = Indicator()
@@ -82,26 +82,69 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     answers.
     """
     
-    let mathDitionary:[String:[String]] = ["5 Dynamic Multiple Choice Question":["Write five multiple choice questions about "],"10 Multiple Choice Question":["Create ten multiple choice questions that shows answers at the very bottom using MathJax to write the content"],"5 Dynamic Flashcards":["Write five flashcards about "],"Multiple Practice Problems with Solutions":["Write 5 practice problem with solutions on "," using MathJax notation to write the content"],"Step-by-Step Guide":["Create a step-by-step guide with a linebreak between steps explaining "," using MathJax notation to write the content."],"Detailed Solution":["Write a detailed step by step solution with a line break between steps on ", " using MathJax notation to write the content."],"Explanation of Concept":["Write a  detailed explanation of the conceptual understanding of ", " using MathJax notation to write the content."]]
-    
-    let mathKeys = ["5 Dynamic Multiple Choice Question", "5 Dynamic Flashcards", "Multiple Practice Problems with Solutions", "Multiple Practice Problems with Solutions", "Step-by-Step Guide", "Detailed Solution"]
-    
-    let scienceDitionary:[String:[String]] = ["20 Word Vocab List":["Write a 20 word vocab list with definitions beneath the work on "],"5 Dynamic Multiple Choice Question":["Write five multiple choice questions about "],"10 Multiple Choice Question":["Create ten multiple choice questions that shows answers at the very bottom"],"5 Dynamic Flashcards":["Write five flashcards about "], "Step-by-Step Guide":["Create a step-by-step guide with a linebreak between steps explaining "],"Detailed Solution":["Write a detailed step by step solution with a line break between steps on "],"Explanation of Concept":["Write a  detailed explanation of the conceptual understanding of "]]
-    
-    let scienceKeys = ["20 Word Vocab List", "5 Dynamic Flashcards", "Step-by-Step Guide", "Detailed Solution", "Step-by-Step Guide", "Detailed Solution", "Explanation of Concept"]
-    
-    
-    let historyDitionary:[String:[String]] = ["20 Word Vocab List":["Write a 20 word vocab list with definitions on "],"5 Dynamic Multiple Choice Question":["Write five multiple choice questions about "],"5 Dynamic Flashcards":["Write five flashcards about "],"10 Multiple Choice Question":["Create ten multiple choice questions that shows answers at the very bottom"], "Example Essay Topics":["Write three comprehensive essay topics on "],"Free Response Questions with Example Essay":["Write a detailed step by step solution with a line break between steps on "],"Explanation of Concept":["Write a  detailed explanation of "], "Short Essays Examples":["Write two example short free response questions with solutions on "]]
-    
-    let historyKeys = ["20 Word Vocab List", "5 Dynamic Multiple Choice Question", "5 Dynamic Flashcards", "Example Essay Topics", "Example Essay Topics", "Free Response Questions with Example Essay", "Explanation of Concept", "Short Essays Examples"]
-    
-    let socialScienceDitionary:[String:[String]] = ["20 Word Vocab List":["Write a 20 word vocab list with definitions on "],"5 Dynamic Multiple Choice Question":["W`rite five questions about"],"5 Dynamic Flashcards":["Write five flashcards about "],"10 Multiple Choice Question":["Create ten multiple choice questions that shows answers at the very bottom"], "Example Essay Topics":["Write three comprehensive essay topics on "],"Free Response Questions with Example Essay":["Write a detailed step by step solution on "],"Explanation of Concept":["Write a  detailed explanation of "], "Short Essays Examples":["Write two example short free response questions with solutions on "]]
-    
-    let socialScienceKeys = ["20 Word Vocab List", "5 Dynamic Multiple Choice Question", "5 Dynamic Flashcards", "Example Essay Topics", "Short Essays Examples"]
-    
-    let englishDitionary:[String:[String]] = ["20 Word Vocab List":["Write a 20 word vocab list with definitions "],"5 Dynamic Multiple Choice Question":["Write five multiple choice questions about "],"5 Flashcards":["Write five flashcards about ","written using only HTML and JavaScript designed to fit a mobile device."], "Example Essay Topics":["Write three comprehensive essay topics on "],"Free Response Questions with Example Essay":["Write an example free response question on the example of ", ", and a comprehensive essay that answers all parts of this essay."],"Explanation of Concept":["Write a  detailed explanation of "],"10 Multiple Choice Question":["Create ten multiple choice questions that shows answers at the very bottom"], "Short Essays Examples":["Write two short example free response questions with answers on "], "Outline an Essay":["Create a Harvard style outline on the topic of "," that includes an introduction with a thesis, outline of multiple body paragraphs with topic sentences, warrants, and evidence.  Additionally, a short outline of the conclusion that ties all the points together."]]
-    
-    let englishKeys = ["20 Word Vocab List", "5 Dynamic Multiple Choice Question", "5 Dynamic Flashcards", "Example Essay Topics", "Short Essays Examples"]
+    let mathDitionary:[String:[String]] = [
+        "5 Multiple Choice":["Write five multiple choice questions about "],
+        "10 Multiple Choice":["Create ten multiple choice questions that shows answers at the very bottom using MathJax to write the content"],
+        "5 Flashcards":["Write five flashcards about "],
+        "Practice Problems":["Write 5 practice problem with solutions on "," using MathJax notation to write the content"],
+        "Step-by-Step Guide":["Create a step-by-step guide with a linebreak between steps explaining "," using MathJax notation to write the content."],
+        "Detailed Solution":["Write a detailed step by step solution with a line break between steps on ", " using MathJax notation to write the content."],
+        "Explain Concept":["Write a detailed explanation of the conceptual understanding of ", " using MathJax notation to write the content."]
+    ]
+
+    let mathKeys = ["5 Multiple Choice", "5 Flashcards", "Practice Problems", "Step-by-Step Guide", "Detailed Solution", "Explain Concept"]
+
+    let scienceDitionary:[String:[String]] = [
+        "Vocab List (20 Words)":["Write a 20 word vocab list with definitions beneath the word on "],
+        "5 Multiple Choice":["Write five multiple choice questions about "],
+        "10 Multiple Choice":["Create ten multiple choice questions that shows answers at the very bottom"],
+        "5 Flashcards":["Write five flashcards about "],
+        "Step-by-Step Guide":["Create a step-by-step guide with a linebreak between steps explaining "],
+        "Detailed Solution":["Write a detailed step by step solution with a line break between steps on "],
+        "Explain Concept":["Write a detailed explanation of the conceptual understanding of "]
+    ]
+
+    let scienceKeys = ["Vocab List (20 Words)", "5 Multiple Choice", "5 Flashcards", "Step-by-Step Guide", "Detailed Solution", "Explain Concept"]
+
+    let historyDitionary:[String:[String]] = [
+        "Vocab List (20 Words)":["Write a 20 word vocab list with definitions on "],
+        "5 Multiple Choice":["Write five multiple choice questions about "],
+        "5 Flashcards":["Write five flashcards about "],
+        "10 Multiple Choice":["Create ten multiple choice questions that shows answers at the very bottom"],
+        "Essay Topics":["Write three comprehensive essay topics on "],
+        "Free Response + Essay":["Write a detailed step by step solution with a line break between steps on "],
+        "Explain Concept":["Write a detailed explanation of "],
+        "Short Essay Examples":["Write two example short free response questions with solutions on "]
+    ]
+
+    let historyKeys = ["Vocab List (20 Words)", "5 Multiple Choice", "5 Flashcards", "Essay Topics", "Free Response + Essay", "Explain Concept", "Short Essay Examples"]
+
+    let socialScienceDitionary:[String:[String]] = [
+        "Vocab List (20 Words)":["Write a 20 word vocab list with definitions on "],
+        "5 Multiple Choice":["Write five multiple choice questions about "],
+        "5 Flashcards":["Write five flashcards about "],
+        "10 Multiple Choice":["Create ten multiple choice questions that shows answers at the very bottom"],
+        "Essay Topics":["Write three comprehensive essay topics on "],
+        "Free Response + Essay":["Write a detailed step by step solution on "],
+        "Explain Concept":["Write a detailed explanation of "],
+        "Short Essay Examples":["Write two example short free response questions with solutions on "]
+    ]
+
+    let socialScienceKeys = ["Vocab List (20 Words)", "5 Multiple Choice", "5 Flashcards", "Essay Topics", "Short Essay Examples"]
+
+    let englishDitionary:[String:[String]] = [
+        "Vocab List (20 Words)":["Write a 20 word vocab list with definitions "],
+        "5 Multiple Choice":["Write five multiple choice questions about "],
+        "5 Flashcards":["Write five flashcards about ","written using only HTML and JavaScript designed to fit a mobile device."],
+        "Essay Topics":["Write three comprehensive essay topics on "],
+        "Free Response + Essay":["Write an example free response question on the example of ", ", and a comprehensive essay that answers all parts of this essay."],
+        "Explain Concept":["Write a detailed explanation of "],
+        "10 Multiple Choice":["Create ten multiple choice questions that shows answers at the very bottom"],
+        "Short Essay Examples":["Write two short example free response questions with answers on "],
+        "Essay Outline":["Create a Harvard style outline on the topic of "," that includes an introduction with a thesis, outline of multiple body paragraphs with topic sentences, warrants, and evidence. Additionally, a short outline of the conclusion that ties all the points together."]
+    ]
+
+    let englishKeys = ["Vocab List (20 Words)", "5 Multiple Choice", "5 Flashcards", "Essay Topics", "Short Essay Examples"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -321,21 +364,35 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.textStackView.addArrangedSubview(textView)
     }
 
+    func estimateTokenCost(str: String) -> Int {
+        let tokenQuestions = Int(Double(str.count) / 4.0)
+        var maxTokens = UserService.user.tokensRemaining - tokenQuestions
+        if maxTokens > 4000 {
+            if self.gptType == "gpt-4o-mini" {
+                maxTokens = 4000
+            } else if maxTokens > 8000 {
+                maxTokens = 8000
+            }
+        }
+        let multiplier = (gptType == "gpt-4o-mini") ? 1 : 15
+        return maxTokens * multiplier
+    }
+
     func makeCallToOpenAI(str:String, system:String){
         let tokenQuestions = Int(Double(str.count)/4.0)
         var maxTokens = UserService.user.tokensRemaining-tokenQuestions
-        
+
         if maxTokens < 200 {
-            let cancel = UIAlertAction(title: "cancel", style: .cancel){ (action) in
+            let cancel = UIAlertAction(title: "OK", style: .cancel){ (action) in
             }
-            
-            let ac1 = UIAlertController(title: "Insufficient Tokens", message: "You do not have enough tokens to ask this question. Please buy more if you would like to ask this question.", preferredStyle: .alert)
+
+            let ac1 = UIAlertController(title: "Insufficient Tokens", message: "You don't have enough tokens for this request. Tap the Tokens button to purchase more.", preferredStyle: .alert)
             ac1.addAction(cancel)
             self.present(ac1, animated: true)
             return
         }
         if maxTokens > 4000 {
-            if self.gptType == "gpt-3.5-turbo"{
+            if self.gptType == "gpt-4o-mini"{
                 maxTokens = 4000
             }
             else {
@@ -344,12 +401,31 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                 }
             }
         }
-        
+
+        let multiplier = (gptType == "gpt-4o-mini") ? 1 : 15
+        let estimatedCost = maxTokens * multiplier
+        let tokensFormatted = DocumentService.formatNumber(estimatedCost)
+        let remainingFormatted = DocumentService.formatNumber(UserService.user.tokensRemaining)
+        let modelName = (gptType == "gpt-4o-mini") ? "GPT-4o mini" : "GPT-4o"
+
+        let confirmAlert = UIAlertController(
+            title: "Confirm Generation",
+            message: "Model: \(modelName)\nEstimated cost: ~\(tokensFormatted) tokens\nYour balance: \(remainingFormatted) tokens",
+            preferredStyle: .alert
+        )
+        confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        confirmAlert.addAction(UIAlertAction(title: "Generate", style: .default) { _ in
+            self.executeOpenAICall(str: str, system: system, maxTokens: maxTokens)
+        })
+        self.present(confirmAlert, animated: true)
+    }
+
+    func executeOpenAICall(str: String, system: String, maxTokens: Int) {
         let data : [String: Any] = [
             "message" : str, "model":gptType, "max_tokens":maxTokens, "system":system]
-        
+
         let indicator = Indicator()
-        indicator.alert.title = "Can take up to 90 minutes for dynamic content."
+        indicator.alert.title = "Generating your content..."
         indicator.showIndicator()
         
         let funcGetData = Functions.functions().httpsCallable("getData")
@@ -397,7 +473,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                     
                     let ref = db.collection("users").document(UserService.user.id)
                     var multiplier:Int{
-                        if self.gptType == "gpt-3.5-turbo"{
+                        if self.gptType == "gpt-4o-mini"{
                             return 1
                         }
                         else {
@@ -508,7 +584,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         if textField.text == nil || textField.text == "" {
             canSubmit = false
             numberOfCharacters.text = "Characters Remaining: \(numberremaining)"
-            numberOfCharacters.textColor = .black
+            numberOfCharacters.textColor = .label
 
         }
         else if textField.text!.count > 50 {
@@ -519,7 +595,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         else {
             canSubmit = true
             numberOfCharacters.text = "Characters Remaining: \(numberremaining)"
-            numberOfCharacters.textColor = .black
+            numberOfCharacters.textColor = .label
 
         }
     }
@@ -538,7 +614,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         if textField.text == nil {
             canSubmit = false
             numberOfCharacters.text = "Characters Remaining: \(numberremaining)"
-            numberOfCharacters.textColor = .black
+            numberOfCharacters.textColor = .label
 
         }
         else if textField.text!.count > 50 {
@@ -549,21 +625,18 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         else {
             canSubmit = true
             numberOfCharacters.text = "Characters Remaining: \(numberremaining)"
-            numberOfCharacters.textColor = .black
+            numberOfCharacters.textColor = .label
         }
     }
     
     @IBAction func toggleGPTLevel(_ sender: Any) {
         
-        if gptType == "gpt-3.5-turbo"{
-            gptType = "gpt-4"
-
-            toggleGPTType.title = "GPT4"
-
-        }
-        else {
-            gptType = "gpt-3.5-turbo"
-            toggleGPTType.title = "ChatGPT3.5"
+        if gptType == "gpt-4o-mini" {
+            gptType = "gpt-4o"
+            toggleGPTType.title = "GPT-4o"
+        } else {
+            gptType = "gpt-4o-mini"
+            toggleGPTType.title = "GPT-4o mini"
         }
     }
     

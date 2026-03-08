@@ -86,9 +86,8 @@ class FixGrammarViewController: UIViewController, UITextViewDelegate, reloadUser
         let data : [String: Any] = [
             "message" : str, "max_tokens":maxTokens]
         let indicator = Indicator()
-        indicator.label.text = "can take up\n to a minute..."
         indicator.showIndicator()
-        indicator.alert.title = "ChatGPT can take up to two minutes."
+        indicator.alert.title = "Correcting grammar..."
         let funcGetData = Functions.functions().httpsCallable("getDataGrammar")
         funcGetData.timeoutInterval = 300000
         

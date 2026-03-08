@@ -14,10 +14,10 @@ class PastCallsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var fields = ["Math":["Algebra", "Geometry", "Trigonometry","Calculus","Statistics and Probability"],
                   "Science":["Biology", "Chemistry", "Physics", "Earth Science", "Environmental Science"],
-                  "Social Sciences":["Macroeconomics", "Microeconomics", "Pyschology", "Government", "Geography"],
+                  "Social Sciences":["Macroeconomics", "Microeconomics", "Psychology", "Government", "Geography"],
                   "History":["US History", "European History","World History", "Art History"],
                   "English":["Poetry", "Essays", "Grammar"],
-                  "Foriegn Languages":["Spanish","French","Japanese","Chinese","German","Korean"]
+                  "Foreign Languages":["Spanish","French","Japanese","Chinese","German","Korean"]
     ]
     var selectedSubject:String?
     var selectedField:String?

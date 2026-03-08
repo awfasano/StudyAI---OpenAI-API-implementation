@@ -70,7 +70,7 @@ class PayWallViewController: UIViewController {
     
     private func setUpButtons() {
         buyButton.addTarget(self, action: #selector(didTapBuyTokens), for: .touchUpInside)
-        //restorePurchases.addTarget(self, action: #selector(didTapRestore), for: .touchUpInside)
+        restorePurchases.addTarget(self, action: #selector(didTapRestore), for: .touchUpInside)
     }
     
 
@@ -122,21 +122,23 @@ class PayWallViewController: UIViewController {
         
     }
     @objc private func didTapRestore() {
-        /*
+        let indicator = Indicator()
+        indicator.alert.title = "Restoring..."
+        indicator.showIndicator()
         IAPManager.shared.restorePurchases { [weak self] success in
+            indicator.hideIndicator {
                 if success {
-                    self?.dismiss(animated: true, completion: nil)
-                }
-                else {
-                    let alert = UIAlertController(title: "Failed to Restore", message: "We were unable to restore a previous transaction.", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title:"Dismiss",style: .cancel, handler: nil))
-                    
-                    self?.present(alert, animated: true, completion: nil)
-                    
+                    let alert = UIAlertController(title: "Restored", message: "Your purchases have been restored.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self?.present(alert, animated: true)
+                } else {
+                    let alert = UIAlertController(title: "Nothing to Restore", message: "We could not find any previous purchases to restore.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+                    self?.present(alert, animated: true)
                 }
             }
-        */
         }
+    }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -147,7 +149,8 @@ class PayWallViewController: UIViewController {
         //restorePurchases.frame = CGRect(x: 10, y: view.height - 100, width: view.width - 100, height: 100)
         
         //restorePurchases.frame = CGRect(x: 25, y: termsView.top - 70, width: view.width - 50, height: 50)
-        buyButton.frame = CGRect(x: 25, y: termsView.top - 70, width: view.width - 50, height: 50)
+        restorePurchases.frame = CGRect(x: 25, y: termsView.top - 40, width: view.width - 50, height: 30)
+        buyButton.frame = CGRect(x: 25, y: restorePurchases.top - 60, width: view.width - 50, height: 50)
 
         heroView.frame = CGRect(x: 0, y: header.bottom, width: view.width, height: buyButton.top - view.safeAreaInsets.top - header.height)
     }

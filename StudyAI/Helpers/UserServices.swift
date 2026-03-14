@@ -47,6 +47,11 @@ final class _UserService {
     func showImageView() {}
 
     func getCurrentUserSetRoot(x: CGFloat, y: CGFloat) {
+        if AIcademyRuntime.usesSwiftUIRoot {
+            getCurrentUser()
+            return
+        }
+
         let image = UIImageView(frame: CGRect(x: x, y: y, width: 250, height: 250))
         let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemChromeMaterialDark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)

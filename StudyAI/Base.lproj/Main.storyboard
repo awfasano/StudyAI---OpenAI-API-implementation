@@ -108,7 +108,7 @@
         <!--Study-->
         <scene sceneID="OYP-xY-d8C">
             <objects>
-                <viewController id="Kg7-Dk-FEK" customClass="SubjectTableViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="subjectVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Kg7-Dk-FEK" customClass="SubjectTableViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="SIZ-Ip-O0z">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -182,7 +182,7 @@
         <!--Profile-->
         <scene sceneID="tc6-Vk-86i">
             <objects>
-                <viewController id="1M4-TF-RqG" customClass="ProfileViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="profileVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="1M4-TF-RqG" customClass="ProfileViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Cvr-GC-qAx">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -382,7 +382,7 @@
         <!--Past Questions-->
         <scene sceneID="Iv7-R9-Rwk">
             <objects>
-                <viewController id="jzh-Rr-mGF" customClass="PastCallsViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="pastCallsVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="jzh-Rr-mGF" customClass="PastCallsViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="h7K-f0-lQo">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1120,7 +1120,7 @@
         <!--Fix Grammar View Controller-->
         <scene sceneID="Oh9-bf-r4E">
             <objects>
-                <viewController id="H4u-gN-dKV" customClass="FixGrammarViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="grammarVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="H4u-gN-dKV" customClass="FixGrammarViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="CHa-S1-jB8">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1262,7 +1262,7 @@
         <!--Help View Controller-->
         <scene sceneID="h5p-EG-MKf">
             <objects>
-                <viewController id="Vvk-sQ-8dV" customClass="HelpViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="helpVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Vvk-sQ-8dV" customClass="HelpViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dXd-Te-cNi">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

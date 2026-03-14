@@ -259,8 +259,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             else {
                 let cancel = UIAlertAction(title: "OK", style: .cancel){ (action) in
-                    let story = UIStoryboard(name: "Main", bundle:nil)
-                    let vc = story.instantiateViewController(withIdentifier: "FirstVC")
+                    if AIcademyRuntime.usesSwiftUIRoot {
+                        AIcademyAppSession.shared.signOut()
+                    }
                 }
                 let ac1 = UIAlertController(title: "Success", message: "Your account was successfully deleted.", preferredStyle: .alert)
                 ac1.addAction(cancel)
@@ -274,9 +275,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         let indicator = Indicator()
         indicator.showIndicator()
-            do { try Auth.auth().signOut()}
-            catch { }
+        do { try Auth.auth().signOut() }
+        catch { }
         indicator.hideIndicator(completion: nil)
+
+        if AIcademyRuntime.usesSwiftUIRoot {
+            AIcademyAppSession.shared.signOut()
+            return
+        }
+
         let story = UIStoryboard(name: "Main", bundle:nil)
         let vc = story.instantiateViewController(withIdentifier: "firstVC")
         

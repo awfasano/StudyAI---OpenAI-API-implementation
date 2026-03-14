@@ -10,6 +10,10 @@ import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 
+enum AIcademyRuntime {
+    static var usesSwiftUIRoot = false
+}
+
 enum AIcademyTheme {
     static let ink = UIColor(red: 32/255, green: 18/255, blue: 53/255, alpha: 1)
     static let cyan = UIColor(red: 38/255, green: 232/255, blue: 247/255, alpha: 1)

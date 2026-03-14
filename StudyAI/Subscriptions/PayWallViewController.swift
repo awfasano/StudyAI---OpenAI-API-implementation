@@ -52,6 +52,7 @@ class PayWallViewController: UIViewController {
         AIcademyTheme.applyBackground(to: view)
         view.addSubview(header)
         configureHeadline()
+        setUpCloseButton()
         setUpButtons()
         configurePackageButtons()
 
@@ -149,7 +150,7 @@ class PayWallViewController: UIViewController {
         IAPManager.shared.buyPremium(package: selectedPackage) { success in
             DispatchQueue.main.async {
                 if success {
-                    self.performSegue(withIdentifier: self.segueID ?? "unwindToMain", sender: self)
+                    self.completePremiumFlow()
                 } else {
                     let alert = UIAlertController(title: "Purchase Failed", message: "We were unable to complete the premium purchase right now.", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title:"Dismiss",style: .cancel, handler: nil))
@@ -168,7 +169,7 @@ class PayWallViewController: UIViewController {
                 if success {
                     let alert = UIAlertController(title: "Restored", message: "Your purchases have been restored.", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-                        self?.performSegue(withIdentifier: self?.segueID ?? "unwindToMain", sender: self)
+                        self?.completePremiumFlow()
                     })
                     self?.present(alert, animated: true)
                 } else {
@@ -204,6 +205,16 @@ class PayWallViewController: UIViewController {
     
     @objc private func  didTapClose() {
         dismiss(animated: true)
+    }
+
+    private func completePremiumFlow() {
+        if let segueID = segueID {
+            performSegue(withIdentifier: segueID, sender: self)
+        } else if navigationController?.presentingViewController != nil {
+            navigationController?.dismiss(animated: true)
+        } else if presentingViewController != nil {
+            dismiss(animated: true)
+        }
     }
     
 

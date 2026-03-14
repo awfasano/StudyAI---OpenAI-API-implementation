@@ -287,7 +287,7 @@
         <!--Past Document List View Controller-->
         <scene sceneID="NM7-LP-vz1">
             <objects>
-                <viewController id="BPJ-gf-Wis" customClass="PastDocumentListViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="historyListVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BPJ-gf-Wis" customClass="PastDocumentListViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="avB-2e-PFv">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -435,7 +435,7 @@
         <!--Field View Controller-->
         <scene sceneID="gKa-qa-sdk">
             <objects>
-                <viewController id="wCI-G9-lju" customClass="FieldViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="fieldVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wCI-G9-lju" customClass="FieldViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="IV4-xA-L8M">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -764,7 +764,7 @@
         <!--Main View Controller-->
         <scene sceneID="szP-Dt-VAb">
             <objects>
-                <viewController id="wCY-8i-Xkb" customClass="MainViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="generatorVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wCY-8i-Xkb" customClass="MainViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Er8-Fc-ddJ">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1050,7 +1050,7 @@
         <!--Document View Controller-->
         <scene sceneID="cHu-Te-Nvi">
             <objects>
-                <viewController id="f0C-l9-NBf" customClass="DocumentViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="historyDocumentVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="f0C-l9-NBf" customClass="DocumentViewController" customModule="StudyAI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FvU-9P-yfO">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

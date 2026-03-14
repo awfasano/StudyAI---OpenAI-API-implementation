@@ -548,11 +548,398 @@ struct AIcademyMainShellView: View {
     private var selectedContent: some View {
         switch selectedTab {
         case .study:
-            AIcademyStoryboardNavigationContainer(identifier: "subjectVC")
+            AIcademyStudyHubView()
         case .history:
-            AIcademyStoryboardNavigationContainer(identifier: "pastCallsVC")
+            AIcademyHistoryHubView()
         case .profile:
-            AIcademyStoryboardNavigationContainer(identifier: "profileVC")
+            AIcademyProfileHubView()
+        }
+    }
+}
+
+private struct AIcademySubjectLane: Identifiable {
+    let id: String
+    let title: String
+    let subtitle: String
+    let symbol: String
+    let accent: UIColor
+    let fields: [String]
+}
+
+private enum AIcademyCatalog {
+    static let subjects: [AIcademySubjectLane] = [
+        AIcademySubjectLane(
+            id: "Math",
+            title: "Math",
+            subtitle: "Problem sets, guided steps, and clearer explanations for quantitative work.",
+            symbol: "function",
+            accent: UIColor(red: 0, green: 71 / 255, blue: 171 / 255, alpha: 1),
+            fields: ["Algebra", "Geometry", "Trigonometry", "Calculus", "Statistics and Probability"]
+        ),
+        AIcademySubjectLane(
+            id: "Science",
+            title: "Science",
+            subtitle: "Concept review, vocab, and practice across the core sciences.",
+            symbol: "atom",
+            accent: UIColor(red: 0, green: 204 / 255, blue: 102 / 255, alpha: 1),
+            fields: ["Biology", "Chemistry", "Physics", "Earth Science", "Environmental Science"]
+        ),
+        AIcademySubjectLane(
+            id: "Social Sciences",
+            title: "Social Sciences",
+            subtitle: "Economics, psychology, government, and geography in one lane.",
+            symbol: "globe.americas.fill",
+            accent: UIColor(red: 178 / 255, green: 102 / 255, blue: 1, alpha: 1),
+            fields: ["Macroeconomics", "Microeconomics", "Psychology", "Government", "Geography"]
+        ),
+        AIcademySubjectLane(
+            id: "English",
+            title: "English",
+            subtitle: "Essay prompts, reading support, and Carlisle-powered grammar help.",
+            symbol: "text.book.closed.fill",
+            accent: UIColor(red: 253 / 255, green: 229 / 255, blue: 65 / 255, alpha: 1),
+            fields: ["Poetry", "Essays", "Grammar"]
+        ),
+        AIcademySubjectLane(
+            id: "History",
+            title: "History",
+            subtitle: "Timeline-based review, essay work, and multi-choice practice.",
+            symbol: "building.columns.fill",
+            accent: UIColor(red: 1, green: 128 / 255, blue: 0, alpha: 1),
+            fields: ["US History", "European History", "World History", "Art History"]
+        )
+    ]
+
+    static func subject(id: String?) -> AIcademySubjectLane? {
+        subjects.first { $0.id == id }
+    }
+}
+
+private struct AIcademyStudyRoute: Identifiable {
+    enum Kind {
+        case generator
+        case grammar
+    }
+
+    let kind: Kind
+    let subject: AIcademySubjectLane
+    let field: String
+
+    var id: String {
+        "\(subject.id)-\(field)-\(kind == .grammar ? "grammar" : "generator")"
+    }
+}
+
+private struct AIcademyHistoryRoute: Identifiable {
+    let subject: AIcademySubjectLane
+    let field: String
+
+    var id: String {
+        "\(subject.id)-\(field)"
+    }
+}
+
+struct AIcademyStudyHubView: View {
+    @EnvironmentObject private var session: AIcademyAppSession
+    @State private var selectedSubjectID = AIcademyCatalog.subjects.first?.id ?? "Math"
+    @State private var activeRoute: AIcademyStudyRoute?
+    @State private var verificationMessage = ""
+    @State private var isSendingVerification = false
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 14),
+        GridItem(.flexible(), spacing: 14)
+    ]
+
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 16) {
+                AIcademySurfaceCard(tint: selectedSubject?.accent ?? AIcademyTheme.cyan) {
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack(alignment: .center, spacing: 14) {
+                            AIcademyCarlisleMark(size: 82)
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Start a new study set")
+                                    .font(.system(size: 28, weight: .black))
+                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+
+                                Text("Pick a subject, narrow it to a field, and open the generator without dropping into the old table stack first.")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.72))
+                            }
+
+                            Spacer(minLength: 0)
+                        }
+
+                        HStack(spacing: 10) {
+                            AIcademyPlanPill(isPremium: session.isPremium)
+
+                            Text(session.isPremium ? "Full Premium access is active." : "Free plan includes lighter daily usage.")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.68))
+                        }
+
+                        if needsEmailVerification {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Verify your email to make account recovery and Premium access safer across devices.")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+
+                                Button(isSendingVerification ? "Sending..." : "Send Verification Email") {
+                                    sendVerificationEmail()
+                                }
+                                .buttonStyle(AIcademyOutlineButtonStyle())
+                                .disabled(isSendingVerification)
+
+                                if !verificationMessage.isEmpty {
+                                    Text(verificationMessage)
+                                        .font(.system(size: 13, weight: .semibold))
+                                        .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.7))
+                                }
+                            }
+                            .padding(16)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color(uiColor: AIcademyTheme.yellow).opacity(0.18))
+                            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        }
+                    }
+                }
+
+                Text("Subjects")
+                    .font(.system(size: 20, weight: .black))
+                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+                    .padding(.horizontal, 4)
+
+                LazyVGrid(columns: columns, spacing: 14) {
+                    ForEach(AIcademyCatalog.subjects) { subject in
+                        Button {
+                            selectedSubjectID = subject.id
+                        } label: {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Image(systemName: subject.symbol)
+                                    .font(.system(size: 22, weight: .black))
+                                    .foregroundStyle(Color(uiColor: subject.accent))
+
+                                Text(subject.title)
+                                    .font(.system(size: 20, weight: .black))
+                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+
+                                Text(subject.subtitle)
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.68))
+                                    .multilineTextAlignment(.leading)
+
+                                Text("\(subject.fields.count) fields")
+                                    .font(.system(size: 12, weight: .black))
+                                    .foregroundStyle(Color(uiColor: subject.accent))
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 168, alignment: .topLeading)
+                        }
+                        .buttonStyle(AIcademySelectableCardButtonStyle(isSelected: subject.id == selectedSubjectID, accent: subject.accent))
+                    }
+                }
+
+                if let selectedSubject {
+                    AIcademySurfaceCard(tint: selectedSubject.accent) {
+                        VStack(alignment: .leading, spacing: 14) {
+                            Text("\(selectedSubject.title) fields")
+                                .font(.system(size: 24, weight: .black))
+                                .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+
+                            Text("Jump straight into a focused generator flow. Grammar opens the dedicated correction tool; everything else opens the main study generator.")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.7))
+
+                            VStack(spacing: 10) {
+                                ForEach(selectedSubject.fields, id: \.self) { field in
+                                    Button {
+                                        activeRoute = AIcademyStudyRoute(
+                                            kind: selectedSubject.title == "English" && field == "Grammar" ? .grammar : .generator,
+                                            subject: selectedSubject,
+                                            field: field
+                                        )
+                                    } label: {
+                                        HStack(spacing: 12) {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text(field)
+                                                    .font(.system(size: 17, weight: .heavy))
+                                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+
+                                                Text(field == "Grammar" ? "Open the dedicated writing helper." : "Open generator workspace")
+                                                    .font(.system(size: 12, weight: .bold))
+                                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.58))
+                                            }
+
+                                            Spacer(minLength: 8)
+
+                                            Image(systemName: "arrow.right.circle.fill")
+                                                .font(.system(size: 22, weight: .black))
+                                                .foregroundStyle(Color(uiColor: selectedSubject.accent))
+                                        }
+                                        .padding(16)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(uiColor: AIcademyTheme.softSurface))
+                                        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                                .stroke(Color(uiColor: selectedSubject.accent).opacity(0.35), lineWidth: 2)
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(18)
+            .padding(.bottom, 24)
+        }
+        .background(Color.clear)
+        .sheet(item: $activeRoute) { route in
+            AIcademyStandaloneNavigationContainer(title: route.field) {
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                switch route.kind {
+                case .generator:
+                    guard let controller = storyboard.instantiateViewController(withIdentifier: "generatorVC") as? MainViewController else {
+                        return UIViewController()
+                    }
+                    controller.subject = route.subject.title
+                    controller.field = route.field
+                    controller.uiColor = route.subject.accent
+                    return controller
+                case .grammar:
+                    let controller = storyboard.instantiateViewController(withIdentifier: "grammarVC")
+                    controller.title = route.field
+                    return controller
+                }
+            }
+        }
+    }
+
+    private var selectedSubject: AIcademySubjectLane? {
+        AIcademyCatalog.subject(id: selectedSubjectID)
+    }
+
+    private var needsEmailVerification: Bool {
+        guard let authUser = Auth.auth().currentUser else { return false }
+        return !authUser.isEmailVerified
+    }
+
+    private func sendVerificationEmail() {
+        guard let authUser = Auth.auth().currentUser else { return }
+
+        verificationMessage = ""
+        isSendingVerification = true
+        authUser.sendEmailVerification { error in
+            DispatchQueue.main.async {
+                isSendingVerification = false
+                if let error {
+                    verificationMessage = error.localizedDescription
+                } else {
+                    verificationMessage = "Verification email sent. Check your inbox and spam folder."
+                }
+            }
+        }
+    }
+}
+
+struct AIcademyHistoryHubView: View {
+    @State private var activeRoute: AIcademyHistoryRoute?
+
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 16) {
+                AIcademySurfaceCard(tint: AIcademyTheme.orange) {
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack(alignment: .center, spacing: 14) {
+                            AIcademyCarlisleMark(size: 82)
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Past Questions")
+                                    .font(.system(size: 28, weight: .black))
+                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+
+                                Text("Browse older study material by subject and field without dropping into nested legacy tables first.")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.72))
+                            }
+
+                            Spacer(minLength: 0)
+                        }
+
+                        Text("Each field opens the saved questions, guides, quizzes, and review sheets already attached to that lane.")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.64))
+                    }
+                }
+
+                ForEach(AIcademyCatalog.subjects) { subject in
+                    AIcademySurfaceCard(tint: subject.accent) {
+                        VStack(alignment: .leading, spacing: 14) {
+                            HStack(spacing: 12) {
+                                Image(systemName: subject.symbol)
+                                    .font(.system(size: 20, weight: .black))
+                                    .foregroundStyle(Color(uiColor: subject.accent))
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(subject.title)
+                                        .font(.system(size: 22, weight: .black))
+                                        .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+
+                                    Text(subject.subtitle)
+                                        .font(.system(size: 13, weight: .semibold))
+                                        .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.66))
+                                }
+
+                                Spacer(minLength: 0)
+                            }
+
+                            VStack(spacing: 10) {
+                                ForEach(subject.fields, id: \.self) { field in
+                                    Button {
+                                        activeRoute = AIcademyHistoryRoute(subject: subject, field: field)
+                                    } label: {
+                                        HStack {
+                                            Text(field)
+                                                .font(.system(size: 16, weight: .heavy))
+                                                .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+                                            Spacer(minLength: 8)
+                                            Image(systemName: "clock.arrow.circlepath")
+                                                .font(.system(size: 18, weight: .black))
+                                                .foregroundStyle(Color(uiColor: subject.accent))
+                                        }
+                                        .padding(16)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(uiColor: AIcademyTheme.softSurface))
+                                        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                                .stroke(Color(uiColor: subject.accent).opacity(0.28), lineWidth: 2)
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(18)
+            .padding(.bottom, 24)
+        }
+        .background(Color.clear)
+        .sheet(item: $activeRoute) { route in
+            AIcademyStandaloneNavigationContainer(title: route.field) {
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                guard let controller = storyboard.instantiateViewController(withIdentifier: "historyListVC") as? PastDocumentListViewController else {
+                    return UIViewController()
+                }
+                controller.subject = route.subject.title
+                controller.field = route.field
+                return controller
+            }
         }
     }
 }
@@ -743,6 +1130,123 @@ struct AIcademyShellTabBar: View {
                 .stroke(Color(uiColor: AIcademyTheme.border), lineWidth: 2)
         )
         .shadow(color: Color(uiColor: AIcademyTheme.ink).opacity(0.12), radius: 18, y: 10)
+    }
+}
+
+struct AIcademyProfileHubView: View {
+    @EnvironmentObject private var session: AIcademyAppSession
+    @State private var showingSettings = false
+    @State private var showingHelp = false
+    @State private var restoreMessage = ""
+    @State private var isRestoring = false
+    @State private var user = UserService.user
+
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(spacing: 14) {
+                        AIcademyCarlisleMark(size: 88)
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(displayName)
+                                .font(.system(size: 26, weight: .black))
+                                .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+
+                            Text(user.email.isEmpty ? "Signed in to AIcademy" : user.email)
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.72))
+
+                            AIcademyPlanPill(isPremium: session.isPremium)
+                        }
+
+                        Spacer(minLength: 0)
+                    }
+
+                    Text("Keep your account ready, restore Premium if needed, and jump into support without digging through old tables.")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Color(uiColor: AIcademyTheme.ink).opacity(0.72))
+                }
+                .padding(22)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                        .stroke(Color(uiColor: AIcademyTheme.border), lineWidth: 2)
+                )
+
+                VStack(spacing: 12) {
+                    Button("Manage Account Details") {
+                        showingSettings = true
+                    }
+                    .buttonStyle(AIcademyFilledButtonStyle())
+
+                    Button(isRestoring ? "Restoring..." : "Restore Purchases") {
+                        restorePurchases()
+                    }
+                    .buttonStyle(AIcademyOutlineButtonStyle())
+                    .disabled(isRestoring)
+
+                    Button("Help and Support") {
+                        showingHelp = true
+                    }
+                    .buttonStyle(AIcademyOutlineButtonStyle())
+
+                    Button("Sign Out") {
+                        session.signOut()
+                    }
+                    .buttonStyle(AIcademyOutlineButtonStyle())
+                }
+
+                if !restoreMessage.isEmpty {
+                    Text(restoreMessage)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(Color(uiColor: AIcademyTheme.ink))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(18)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .stroke(Color(uiColor: AIcademyTheme.border), lineWidth: 2)
+                        )
+                }
+            }
+            .padding(18)
+            .padding(.bottom, 24)
+        }
+        .background(Color.clear)
+        .onAppear {
+            refreshProfile()
+            session.refreshPremium()
+        }
+        .sheet(isPresented: $showingSettings, onDismiss: refreshProfile) {
+            AIcademySheetNavigationContainer(identifier: "profileVC", title: "Profile")
+        }
+        .sheet(isPresented: $showingHelp) {
+            AIcademySheetNavigationContainer(identifier: "helpVC", title: "Help")
+        }
+    }
+
+    private var displayName: String {
+        let name = "\(user.firstName) \(user.lastName)".trimmingCharacters(in: .whitespacesAndNewlines)
+        return name.isEmpty ? "Your AIcademy Profile" : name
+    }
+
+    private func refreshProfile() {
+        user = UserService.user
+    }
+
+    private func restorePurchases() {
+        restoreMessage = ""
+        isRestoring = true
+        IAPManager.shared.restorePurchases { success in
+            DispatchQueue.main.async {
+                isRestoring = false
+                session.refreshPremium()
+                restoreMessage = success ? "Premium has been restored on this account." : "We couldn't find a previous Premium purchase to restore right now."
+            }
+        }
     }
 }
 
@@ -1045,6 +1549,45 @@ struct AIcademyBlockingProgressView: View {
                     .stroke(Color(uiColor: AIcademyTheme.border), lineWidth: 2)
             )
         }
+    }
+}
+
+struct AIcademySurfaceCard<Content: View>: View {
+    var tint: UIColor = AIcademyTheme.border
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        content
+            .padding(22)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .stroke(Color(uiColor: tint).opacity(0.55), lineWidth: 2)
+            )
+            .shadow(color: Color(uiColor: AIcademyTheme.ink).opacity(0.1), radius: 18, y: 10)
+    }
+}
+
+struct AIcademySelectableCardButtonStyle: ButtonStyle {
+    let isSelected: Bool
+    let accent: UIColor
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(18)
+            .background(isSelected ? Color(uiColor: accent).opacity(configuration.isPressed ? 0.2 : 0.16) : Color.white.opacity(configuration.isPressed ? 0.94 : 1))
+            .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .stroke(
+                        Color(uiColor: isSelected ? accent : AIcademyTheme.border),
+                        lineWidth: isSelected ? 3 : 2
+                    )
+            )
+            .shadow(color: Color(uiColor: AIcademyTheme.ink).opacity(0.08), radius: 14, y: 8)
+            .scaleEffect(configuration.isPressed ? 0.985 : 1)
     }
 }
 

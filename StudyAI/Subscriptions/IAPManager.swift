@@ -1,8 +1,13 @@
-import Purchases
+import RevenueCat
 import Foundation
 import StoreKit
 
 final class IAPManager {
+
+    enum PremiumPackageKind {
+        case monthly
+        case annual
+    }
 
     static let shared = IAPManager()
     private init() {}
@@ -12,11 +17,12 @@ final class IAPManager {
     }
 
     public func getSubscriptionStatus(completion: ((Bool) -> Void)?) {
-        Purchases.shared.purchaserInfo { info, error in
+        Purchases.shared.getCustomerInfo { info, error in
             guard let entitlements = info?.entitlements, error == nil else {
+                completion?(false)
                 return
             }
-            if entitlements.all["Premium"]?.isActive == true {
+            if Self.hasActivePremium(in: entitlements) {
                 KeychainHelper.shared.save(true, forKey: "premium")
                 completion?(true)
             } else {
@@ -26,47 +32,63 @@ final class IAPManager {
         }
     }
 
-    public func fetchPackages(completion: @escaping (Purchases.Package?) -> Void) {
-        Purchases.shared.offerings { offerings, error in
-            guard let package = offerings?.offering(identifier: "tokens")?.availablePackages.first, error == nil else {
+    public func fetchPremiumPackages(completion: @escaping (Package?, Package?) -> Void) {
+        Purchases.shared.getOfferings { offerings, error in
+            guard error == nil else {
+                completion(nil, nil)
                 return
             }
-            completion(package)
+            let current = offerings?.current ?? offerings?.offering(identifier: "default")
+            let packages = current?.availablePackages ?? []
+
+            let monthly = packages.first {
+                $0.identifier == "$rc_monthly"
+                || $0.packageType == .monthly
+                || $0.storeProduct.productIdentifier == "com.waitedco.StudyAI.premium_monthly"
+            }
+            let annual = packages.first {
+                $0.identifier == "$rc_annual"
+                || $0.packageType == .annual
+                || $0.storeProduct.productIdentifier == "com.waitedco.StudyAI.premium_annual"
+            }
+            completion(monthly, annual)
         }
     }
 
-    func buyTokens(package: Purchases.Package, completion: @escaping (Bool) -> Void) {
-        Purchases.shared.purchasePackage(package) { transaction, info, error, userCancelled in
+    func buyPremium(package: Package, completion: @escaping (Bool) -> Void) {
+        Purchases.shared.purchase(package: package) { transaction, info, error, userCancelled in
             guard let transaction = transaction,
-                  let _ = info?.entitlements,
+                  let entitlements = info?.entitlements,
                   error == nil,
                   userCancelled == false else {
+                completion(false)
                 return
             }
-
-            switch transaction.transactionState {
-            case .purchased:
-                completion(true)
-            case .purchasing, .failed, .restored, .deferred:
-                break
-            @unknown default:
-                break
-            }
+            _ = transaction
+            let isActive = Self.hasActivePremium(in: entitlements)
+            KeychainHelper.shared.save(isActive, forKey: "premium")
+            completion(isActive)
         }
     }
 
     func restorePurchases(completion: @escaping (Bool) -> Void) {
-        Purchases.shared.restoreTransactions { info, error in
+        Purchases.shared.restorePurchases { info, error in
             guard let entitlements = info?.entitlements, error == nil else {
+                completion(false)
                 return
             }
 
-            if entitlements.all["Premium"]?.isActive == true {
+            if Self.hasActivePremium(in: entitlements) {
                 KeychainHelper.shared.save(true, forKey: "premium")
                 completion(true)
             } else {
+                KeychainHelper.shared.save(false, forKey: "premium")
                 completion(false)
             }
         }
+    }
+
+    private static func hasActivePremium(in entitlements: EntitlementInfos) -> Bool {
+        ["premium", "Premium", "pro", "Pro"].contains { entitlements[$0]?.isActive == true }
     }
 }

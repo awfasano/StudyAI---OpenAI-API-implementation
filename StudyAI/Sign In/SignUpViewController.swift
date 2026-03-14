@@ -23,10 +23,13 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
     @IBOutlet weak var numberPass: UILabel!
     @IBOutlet weak var phoneNumberTextField: UITextField!
     @IBOutlet weak var specialCharacter: UILabel!
+    private let formCard = UIView()
+    private let titleLabel = UILabel()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        AIcademyTheme.applyBackground(to: view)
         firstNameTextField.delegate = self
         lastNameTextField.delegate = self
         emailTextField.delegate = self
@@ -49,6 +52,27 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
         Utilities.styleTextField(emailTextField, color: nil)
         Utilities.styleTextField(passwordTextField, color: nil)
         Utilities.styleTextField(confirmPasswordTextField, color: nil)
+        Utilities.styleTextField(phoneNumberTextField, color: nil)
+        configureChrome()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let top = max(view.safeAreaInsets.top + 18, firstNameTextField.frame.minY - 82)
+        let height = signUpButton.frame.maxY - top + 36
+        formCard.frame = CGRect(x: 14, y: top, width: view.bounds.width - 28, height: height)
+        titleLabel.frame = CGRect(x: formCard.frame.minX + 24, y: formCard.frame.minY + 18, width: formCard.frame.width - 48, height: 36)
+        view.sendSubviewToBack(formCard)
+    }
+
+    private func configureChrome() {
+        AIcademyTheme.styleSurface(formCard)
+        view.insertSubview(formCard, at: 1)
+        AIcademyTheme.styleTitle(titleLabel, size: 28)
+        titleLabel.text = "Create your AIcademy account"
+        titleLabel.adjustsFontSizeToFitWidth = true
+        view.addSubview(titleLabel)
+        errorLabel.textColor = AIcademyTheme.magenta
     }
     
     //clean password and make sure the two passwords are equal. Want to add a feature with a checkmark to know that the passwords match
@@ -115,15 +139,23 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
                     
                     //I want to document id and the UID to be the same because its just easier
                     let newUserRef =  db.collection("users").document(result?.user.uid ?? "")
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd"
+
                     newUserRef.setData(["firstName": firstName,
                                         "lastName": lastName,
                                         "email": email,
                                         "uid": result?.user.uid ?? "",
                                         "stripeID": "",
-                                        "subscribed":0,
-                                        "tokensRemaining":0,
-                                        "tokensMonthly":0,
-                                        "receivedTokens":false
+                                        "subscribed": false,
+                                        "subscriptionStatus": "free",
+                                        "plan": "free",
+                                        "tokensRemaining": 0,
+                                        "tokensMonthly": 0,
+                                        "receivedTokens": true,
+                                        "dailyUsageDate": formatter.string(from: Date()),
+                                        "dailyGenerationCount": 0,
+                                        "dailyGrammarCount": 0
                                        ]) { (error) in
                         if error != nil {
                             //show error message
@@ -139,7 +171,7 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
                                             
                                         }
                                         
-                                        let ac1 = UIAlertController(title: "Error: Could not send Verification Email Sent", message: "Please have one resent in User Settings to recieve free 50,000 tokens.", preferredStyle: .alert)
+                                        let ac1 = UIAlertController(title: "Verification Email Not Sent", message: "Please resend it from User Settings so you can finish setting up your account.", preferredStyle: .alert)
                                         ac1.addAction(cancel)
                                         self.present(ac1, animated: true)
                                     }
@@ -150,7 +182,7 @@ class SignUpViewController: UIViewController,UITextFieldDelegate {
                                             
                                         }
                                         
-                                        let ac1 = UIAlertController(title: "Verification Email Sent", message: "Recieve free 50,000 tokens by verifying your email.", preferredStyle: .alert)
+                                        let ac1 = UIAlertController(title: "Verification Email Sent", message: "Verify your email to finish setting up your account and keep access easy to restore.", preferredStyle: .alert)
                                         ac1.addAction(cancel)
                                         self.present(ac1, animated: true)
                                     }

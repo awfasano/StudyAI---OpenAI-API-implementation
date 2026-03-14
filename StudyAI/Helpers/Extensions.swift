@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Firebase
 import WebKit
 
 
@@ -594,5 +593,4 @@ extension Double {
 
 
     //validate Password
-
 

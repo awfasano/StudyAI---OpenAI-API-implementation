@@ -7,13 +7,16 @@
 
 import UIKit
 import WebKit
-import Firebase
-import RichTextView
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseFunctions
 
 class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, reloadDelegate, UICollectionViewDelegate,UICollectionViewDataSource, WKNavigationDelegate,reloadUserDelegate {
+    private let heroTag = 9_201
+    private let resultsCardTag = 9_202
+
     func reload() {
-        let tokensFormatted = DocumentService.formatNumber(UserService.user.tokensRemaining)
-         tokensButton.setTitle("Tokens: \(tokensFormatted)", for: .normal)
+        refreshAccessButton()
     }
     
     func reload(success: Bool) {
@@ -54,9 +57,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
 
     let indicatorInitial = Indicator()
 
-    var tokens = UserService.user.tokensRemaining
-
-    
     @IBOutlet weak var helpButton: UIButton!
     
     var systemString = ""
@@ -148,6 +148,10 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        AIcademyTheme.applyBackground(to: view)
+        view.backgroundColor = .clear
+        scrollView.backgroundColor = .clear
+        contentView.backgroundColor = .clear
         
         if subject == nil || field == nil || uiColor == nil {
             let cancel = UIAlertAction(title: "OK", style: .cancel){ (action) in
@@ -194,38 +198,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         
         UserService.delegate = self
         self.setupInterface()
-
-        if !UserService.user.isVerifiable && !UserService.user.receivedTokens {
-            showActivityIndicator()
-            let auth = Auth.auth()
-            auth.currentUser?.reload { err in
-                if let err = err {
-                        self.setupInterface()
-                }
-                else {
-                    if auth.currentUser?.isEmailVerified ?? false {
-                            let db = Firestore.firestore()
-                            let ref = db.collection("users").document(UserService.user.id)
-                            ref.updateData(["isVerifiable":true, "tokensRemaining":UserService.user.tokensRemaining+50000,"receivedTokens":true]) { err in
-                                if let err = err {
-                                    self.hideActivityIndicator()
-                                }
-                                else {
-                                    self.hideActivityIndicator()
-
-                                }
-                            }
-                        }
-                    else {
-                        self.hideActivityIndicator()
-
-                    }
-                }
-            }
-        }
-            else {
-                    self.setupInterface()
-            }
+        refreshAccessButton()
     }
     
     func createHTML(content:String) {
@@ -276,12 +249,22 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         keys = dicKeys
         cell.label.text = dicKeys[indexPath.row]
         cell.label.textColor = uiColor
+        cell.label.font = .systemFont(ofSize: 16, weight: .heavy)
+        cell.info.text = field
+        cell.info.textColor = AIcademyTheme.ink.withAlphaComponent(0.62)
+        cell.info.font = .systemFont(ofSize: 12, weight: .medium)
 
         //cell.layer.cornerRadius = (cell.frame.height)/12
         cell.layer.masksToBounds = true
+        cell.layer.cornerRadius = 24
+        cell.backgroundColor = AIcademyTheme.surface
         
         cell.layer.borderColor = uiColor?.cgColor
         cell.layer.borderWidth = 2.5
+        cell.layer.shadowColor = AIcademyTheme.ink.cgColor
+        cell.layer.shadowOpacity = 0.08
+        cell.layer.shadowRadius = 12
+        cell.layer.shadowOffset = CGSize(width: 0, height: 8)
         
         let view = UIView()
         //view.layer.cornerRadius = (cell.frame.height)/12
@@ -354,6 +337,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         textView.font = .systemFont(ofSize: 18)
         textView.delegate = self
         textView.text = content
+        Utilities.styleTextView(textView, color: uiColor)
 
         textView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.textStackView.frame.height)
         
@@ -364,60 +348,36 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.textStackView.addArrangedSubview(textView)
     }
 
-    func estimateTokenCost(str: String) -> Int {
-        let tokenQuestions = Int(Double(str.count) / 4.0)
-        var maxTokens = UserService.user.tokensRemaining - tokenQuestions
-        if maxTokens > 4000 {
-            if self.gptType == "gpt-4o-mini" {
-                maxTokens = 4000
-            } else if maxTokens > 8000 {
-                maxTokens = 8000
-            }
-        }
-        let multiplier = (gptType == "gpt-4o-mini") ? 1 : 15
-        return maxTokens * multiplier
+    func generationBudget() -> Int {
+        gptType == "gpt-4o-mini" ? 4000 : 8000
     }
 
     func makeCallToOpenAI(str:String, system:String){
-        let tokenQuestions = Int(Double(str.count)/4.0)
-        var maxTokens = UserService.user.tokensRemaining-tokenQuestions
-
-        if maxTokens < 200 {
-            let cancel = UIAlertAction(title: "OK", style: .cancel){ (action) in
-            }
-
-            let ac1 = UIAlertController(title: "Insufficient Tokens", message: "You don't have enough tokens for this request. Tap the Tokens button to purchase more.", preferredStyle: .alert)
-            ac1.addAction(cancel)
-            self.present(ac1, animated: true)
-            return
-        }
-        if maxTokens > 4000 {
-            if self.gptType == "gpt-4o-mini"{
-                maxTokens = 4000
-            }
-            else {
-                if maxTokens > 8000 {
-                    maxTokens = 8000
+        StudyAccessManager.shared.accessSnapshot(for: .generator) { snapshot in
+            DispatchQueue.main.async {
+                guard snapshot.canUseFeature else {
+                    self.presentUsageLimitAlert(
+                        title: "Free Plan Limit Reached",
+                        message: "Free users get \(StudyAccessFeature.generator.dailyFreeLimit) study generations per day. Upgrade to Premium for fuller access."
+                    )
+                    return
                 }
+
+                let maxTokens = self.generationBudget()
+                let modelName = (self.gptType == "gpt-4o-mini") ? "GPT-4o mini" : "GPT-4o"
+
+                let confirmAlert = UIAlertController(
+                    title: "Confirm Generation",
+                    message: snapshot.confirmMessage(for: modelName),
+                    preferredStyle: .alert
+                )
+                confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                confirmAlert.addAction(UIAlertAction(title: "Generate", style: .default) { _ in
+                    self.executeOpenAICall(str: str, system: system, maxTokens: maxTokens)
+                })
+                self.present(confirmAlert, animated: true)
             }
         }
-
-        let multiplier = (gptType == "gpt-4o-mini") ? 1 : 15
-        let estimatedCost = maxTokens * multiplier
-        let tokensFormatted = DocumentService.formatNumber(estimatedCost)
-        let remainingFormatted = DocumentService.formatNumber(UserService.user.tokensRemaining)
-        let modelName = (gptType == "gpt-4o-mini") ? "GPT-4o mini" : "GPT-4o"
-
-        let confirmAlert = UIAlertController(
-            title: "Confirm Generation",
-            message: "Model: \(modelName)\nEstimated cost: ~\(tokensFormatted) tokens\nYour balance: \(remainingFormatted) tokens",
-            preferredStyle: .alert
-        )
-        confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        confirmAlert.addAction(UIAlertAction(title: "Generate", style: .default) { _ in
-            self.executeOpenAICall(str: str, system: system, maxTokens: maxTokens)
-        })
-        self.present(confirmAlert, animated: true)
     }
 
     func executeOpenAICall(str: String, system: String, maxTokens: Int) {
@@ -469,35 +429,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                         return
                     }
                     
-                    let db = Firestore.firestore()
-                    
-                    let ref = db.collection("users").document(UserService.user.id)
-                    var multiplier:Int{
-                        if self.gptType == "gpt-4o-mini"{
-                            return 1
-                        }
-                        else {
-                            return 15
-                        }
-                    }
-                    
-                    ref.updateData(["tokensRemaining":UserService.user.tokensRemaining-max_tokens*multiplier]) { error in
-                        if let error = error {
-                            indicator.hideIndicator {
-                                
-                                let cancel = UIAlertAction(title: "OK", style: .cancel){ (action) in
-                                }
-                                
-                                let ac1 = UIAlertController(title: "Error", message: "Your request could not be processed.  Please try again.", preferredStyle: .alert)
-                                ac1.addAction(cancel)
-                                self.present(ac1, animated: true)
-                            }
-
-                        }
-                        else {
-                        }
-                    }
-                            
                     if self.textStackView.subviews.count != 0 {
                         self.textStackView.subviews.forEach({ $0.removeFromSuperview() })
                         self.stackViewHgt.constant = 0
@@ -518,6 +449,11 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                         DocumentService.putDocument(subject: self.subject ?? "", field: self.field ?? "", text: content, question: str, docType: "txt",questionType: self.questionTypesForDatabse ?? "", questionTopic: self.textField.text ?? "", indicator: indicator)
                         
                     }
+                    StudyAccessManager.shared.recordSuccessfulUse(for: .generator) {
+                        DispatchQueue.main.async {
+                            self.refreshAccessButton()
+                        }
+                    }
                 }
             }
         }
@@ -527,6 +463,10 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     func createRichTextView(content:String){
         let webView1 = WKWebView()
         webView1.navigationDelegate = self
+        webView1.layer.cornerRadius = 24
+        webView1.layer.borderWidth = 2
+        webView1.layer.borderColor = (uiColor ?? AIcademyTheme.border).cgColor
+        webView1.clipsToBounds = true
 
         let str = """
         <html>
@@ -740,34 +680,34 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         arg.isScrollEnabled = false
         arg.sizeToFit()
     }
-    func adjustUITextViewHeightRich(arg : RichTextView) {
-        arg.translatesAutoresizingMaskIntoConstraints = true
-        arg.sizeToFit()
-    }
-    
     @IBAction func tokensOnTap(_ sender: Any) {
         performSegue(withIdentifier: "toPaywallVC", sender: self)
     }
     
     @IBAction func unwindToMain(segue: UIStoryboardSegue){
-        let tokensFormatted = DocumentService.formatNumber(UserService.user.tokensRemaining)
-         tokensButton.setTitle("Tokens: \(tokensFormatted)", for: .normal)
+        refreshAccessButton()
         }
     
     func setupInterface() {
-        var tokens = UserService.user.tokensRemaining {
-            didSet {
-               let tokensFormatted = DocumentService.formatNumber(tokens)
-                tokensButton.setTitle("Tokens: \(tokensFormatted)", for: .normal)
-            }
-        }
-                
         Utilities.styleFillButton2(button, color: uiColor ?? .blue)
         textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         textField.delegate = self
-        
-        let tokensFormatted = DocumentService.formatNumber(tokens)
-         tokensButton.setTitle("Tokens: \(tokensFormatted)", for: .normal)
+        AIcademyTheme.styleSurface(stackView, tint: uiColor)
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.layoutMargins = UIEdgeInsets(top: 22, left: 18, bottom: 26, right: 18)
+        collectionView.backgroundColor = .clear
+        collectionView.layer.cornerRadius = 22
+
+        Utilities.styleHollowButton(tokensButton)
+        Utilities.styleHollowButton(chatButton)
+        Utilities.styleHollowButton(helpButton)
+        tokensButton.titleLabel?.numberOfLines = 2
+        tokensButton.titleLabel?.textAlignment = .center
+        chatButton.setTitle(" Carlisle", for: .normal)
+        chatButton.setTitleColor(AIcademyTheme.ink, for: .normal)
+        helpButton.setTitle(" Help", for: .normal)
+        helpButton.setTitleColor(AIcademyTheme.ink, for: .normal)
+        tokensButton.setTitleColor(AIcademyTheme.ink, for: .normal)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name:UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name:UIResponder.keyboardWillHideNotification, object: nil)
@@ -779,6 +719,125 @@ class MainViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         chatButton.imageView?.contentMode = .scaleAspectFit
         //addViewsHeight.constant = 800
         Utilities.styleTextField(textField, color: uiColor)
+        numberOfCharacters.textColor = AIcademyTheme.ink.withAlphaComponent(0.7)
+        textField.attributedPlaceholder = NSAttributedString(
+            string: "Enter a focused topic or concept",
+            attributes: [.foregroundColor: AIcademyTheme.ink.withAlphaComponent(0.45)]
+        )
+        installHeroIfNeeded()
+        installResultsCardIfNeeded()
+        refreshAccessButton()
+    }
+
+    private func refreshAccessButton() {
+        StudyAccessManager.shared.accessSnapshot(for: .generator) { snapshot in
+            DispatchQueue.main.async {
+                self.tokensButton.setTitle(snapshot.buttonTitle, for: .normal)
+            }
+        }
+    }
+
+    private func presentUsageLimitAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Not Now", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Go Premium", style: .default) { _ in
+            self.performSegue(withIdentifier: "toPaywallVC", sender: self)
+        })
+        present(alert, animated: true)
+    }
+
+    private func installHeroIfNeeded() {
+        guard stackView.arrangedSubviews.first(where: { $0.tag == heroTag }) == nil else { return }
+
+        let heroCard = UIView()
+        heroCard.tag = heroTag
+        AIcademyTheme.styleSurface(heroCard, tint: uiColor)
+
+        let heroImage = UIImageView(frame: .zero)
+        Utilities.applyHeroImage(heroImage)
+        heroImage.translatesAutoresizingMaskIntoConstraints = false
+
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.numberOfLines = 0
+        title.text = "\(field ?? subject ?? "Study") with Carlisle"
+        AIcademyTheme.styleTitle(title, size: 28)
+
+        let subtitle = UILabel()
+        subtitle.translatesAutoresizingMaskIntoConstraints = false
+        subtitle.numberOfLines = 0
+        subtitle.text = "Pick a format, add a topic, and generate something you can actually study from."
+        AIcademyTheme.styleSubtitle(subtitle, size: 15)
+
+        let pill = UILabel()
+        pill.translatesAutoresizingMaskIntoConstraints = false
+        pill.text = " \(subject ?? "Study") • \(gptType == "gpt-4o-mini" ? "Fast mode" : "Deep mode") "
+        pill.font = .systemFont(ofSize: 12, weight: .bold)
+        pill.textColor = AIcademyTheme.ink
+        pill.backgroundColor = (uiColor ?? AIcademyTheme.yellow).withAlphaComponent(0.2)
+        pill.layer.cornerRadius = 14
+        pill.clipsToBounds = true
+
+        let textStack = UIStackView(arrangedSubviews: [pill, title, subtitle])
+        textStack.translatesAutoresizingMaskIntoConstraints = false
+        textStack.axis = .vertical
+        textStack.spacing = 10
+        textStack.alignment = .leading
+
+        heroCard.addSubview(heroImage)
+        heroCard.addSubview(textStack)
+
+        NSLayoutConstraint.activate([
+            heroImage.leadingAnchor.constraint(equalTo: heroCard.leadingAnchor, constant: 18),
+            heroImage.topAnchor.constraint(equalTo: heroCard.topAnchor, constant: 18),
+            heroImage.widthAnchor.constraint(equalToConstant: 88),
+            heroImage.heightAnchor.constraint(equalToConstant: 88),
+
+            textStack.leadingAnchor.constraint(equalTo: heroImage.trailingAnchor, constant: 16),
+            textStack.trailingAnchor.constraint(equalTo: heroCard.trailingAnchor, constant: -18),
+            textStack.centerYAnchor.constraint(equalTo: heroCard.centerYAnchor),
+
+            heroCard.heightAnchor.constraint(greaterThanOrEqualToConstant: 124)
+        ])
+
+        stackView.insertArrangedSubview(heroCard, at: 0)
+    }
+
+    private func installResultsCardIfNeeded() {
+        guard textStackView.arrangedSubviews.first(where: { $0.tag == resultsCardTag }) == nil else { return }
+
+        let header = UIView()
+        header.tag = resultsCardTag
+        header.translatesAutoresizingMaskIntoConstraints = false
+        header.backgroundColor = AIcademyTheme.surface.withAlphaComponent(0.95)
+        header.layer.cornerRadius = 22
+        header.layer.borderWidth = 2
+        header.layer.borderColor = (uiColor ?? AIcademyTheme.border).cgColor
+
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.text = "Generated Study Sheet"
+        AIcademyTheme.styleTitle(title, size: 22)
+
+        let subtitle = UILabel()
+        subtitle.translatesAutoresizingMaskIntoConstraints = false
+        subtitle.text = "Your generated material will appear here once Carlisle finishes."
+        subtitle.numberOfLines = 0
+        AIcademyTheme.styleSubtitle(subtitle, size: 14)
+
+        header.addSubview(title)
+        header.addSubview(subtitle)
+        NSLayoutConstraint.activate([
+            title.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 18),
+            title.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -18),
+            title.topAnchor.constraint(equalTo: header.topAnchor, constant: 16),
+            subtitle.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 18),
+            subtitle.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -18),
+            subtitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 8),
+            subtitle.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -16)
+        ])
+
+        textStackView.insertArrangedSubview(header, at: 0)
     }
     
     @IBAction func helpButtonOnTap(_ sender: Any) {

@@ -8,6 +8,7 @@
 import UIKit
 
 class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    private let fieldsHeaderTag = 8_301
 
     @IBOutlet weak var tableView: UITableView!
     var subject:String?
@@ -22,6 +23,8 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
     //Foriegn Languages":["Spanish","French","Japanese","Chinese","German","Korean"]
     override func viewDidLoad() {
         super.viewDidLoad()
+        AIcademyTheme.applyBackground(to: view)
+        view.backgroundColor = .clear
         
         if subject == nil || uiColor == nil {
             let alertController = UIAlertController(title: "Error", message: "Getting your information", preferredStyle: .alert)
@@ -33,6 +36,9 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        installHeaderIfNeeded()
         // Do any additional setup after loading the view.
     }
     
@@ -48,7 +54,13 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
         view.layer.cornerRadius = 0
 
         cell.subject.text = fields[subjectCell]?[indexPath.section]
-        cell.layer.cornerRadius = 0
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = AIcademyTheme.surface
+        cell.contentView.layer.cornerRadius = 24
+        cell.contentView.layer.borderWidth = 2
+        cell.contentView.layer.borderColor = (uiColor ?? AIcademyTheme.border).cgColor
+        cell.contentView.layer.masksToBounds = true
+        cell.subject.font = .systemFont(ofSize: 24, weight: .heavy)
         view.backgroundColor = uiColor?.adjustBrightness(by: 25)
         cell.subject.textColor = uiColor
         cell.selectedBackgroundView = view
@@ -79,6 +91,7 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
             cell.selectedBackgroundView = view
 
         default:
+            break
         }
         
         
@@ -105,13 +118,17 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0
+        return 12
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = UIColor.clear
         return headerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        88
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -138,6 +155,38 @@ class FieldViewController: UIViewController, UITableViewDelegate, UITableViewDat
         else if(segue.identifier == "tofixGrammar") {
             let _ = segue.destination as? FixGrammarViewController
         }
+    }
+
+    private func installHeaderIfNeeded() {
+        guard tableView.tableHeaderView?.tag != fieldsHeaderTag else { return }
+
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 196))
+        header.tag = fieldsHeaderTag
+        header.backgroundColor = .clear
+
+        let card = UIView(frame: CGRect(x: 20, y: 12, width: header.bounds.width - 40, height: 168))
+        AIcademyTheme.styleSurface(card, tint: uiColor)
+        card.autoresizingMask = [.flexibleWidth]
+
+        let imageView = UIImageView(frame: CGRect(x: 18, y: 20, width: 88, height: 88))
+        Utilities.applyHeroImage(imageView)
+        card.addSubview(imageView)
+
+        let title = UILabel(frame: CGRect(x: 118, y: 24, width: card.bounds.width - 136, height: 32))
+        title.autoresizingMask = [.flexibleWidth]
+        title.text = "\(subject ?? "Study") paths"
+        AIcademyTheme.styleTitle(title, size: 28)
+        card.addSubview(title)
+
+        let subtitle = UILabel(frame: CGRect(x: 118, y: 60, width: card.bounds.width - 136, height: 52))
+        subtitle.autoresizingMask = [.flexibleWidth]
+        subtitle.numberOfLines = 0
+        subtitle.text = "Choose the specific field you want Carlisle to generate for next."
+        AIcademyTheme.styleSubtitle(subtitle, size: 14)
+        card.addSubview(subtitle)
+
+        header.addSubview(card)
+        tableView.tableHeaderView = header
     }
 
 

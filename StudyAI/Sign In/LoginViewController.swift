@@ -6,7 +6,8 @@
 //
 import UIKit
 import FirebaseAuth
-import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
@@ -16,16 +17,39 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    private let formCard = UIView()
+    private let titleLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        AIcademyTheme.applyBackground(to: view)
         emailTextField.delegate = self
         passwordTextField.delegate = self
 
         errorLabel.alpha = 0
-        Utilities.styleHollowButton(loginButton)
+        Utilities.styleFillButton(loginButton)
+        Utilities.styleLinkButton(forgotButton)
         Utilities.styleTextField(emailTextField, color: nil)
         Utilities.styleTextField(passwordTextField, color: nil)
+        configureChrome()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let top = max(view.safeAreaInsets.top + 24, emailTextField.frame.minY - 92)
+        let height = passwordTextField.frame.maxY - top + 110
+        formCard.frame = CGRect(x: 18, y: top, width: view.bounds.width - 36, height: height)
+        titleLabel.frame = CGRect(x: formCard.frame.minX + 24, y: formCard.frame.minY + 20, width: formCard.frame.width - 48, height: 36)
+        view.sendSubviewToBack(formCard)
+    }
+
+    private func configureChrome() {
+        AIcademyTheme.styleSurface(formCard)
+        view.insertSubview(formCard, at: 1)
+        AIcademyTheme.styleTitle(titleLabel, size: 30)
+        titleLabel.text = "Welcome back"
+        view.addSubview(titleLabel)
+        errorLabel.textColor = AIcademyTheme.magenta
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

@@ -8,7 +8,6 @@
 import UIKit
 import WebKit
 import PDFKit
-import RichTextView
 
 class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewDelegate {
     @IBOutlet weak var stackViewHgt: NSLayoutConstraint!
@@ -16,9 +15,14 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
     
     var webView:WKWebView?
     var docInformation:docInfo?
+    private let headerTag = 8_901
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        AIcademyTheme.applyBackground(to: view)
+        view.backgroundColor = .clear
+        textStackView.spacing = 18
+        installHeaderIfNeeded()
 
         guard let docInfoNotNil = docInformation else {
             let alertController = UIAlertController(title: "Error", message: "Getting your information", preferredStyle: .alert)
@@ -64,6 +68,10 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
     func createHTML(content:String) {
         webView = WKWebView()
         webView?.navigationDelegate = self
+        webView?.layer.cornerRadius = 24
+        webView?.layer.borderWidth = 2
+        webView?.layer.borderColor = AIcademyTheme.border.cgColor
+        webView?.clipsToBounds = true
         webView?.loadHTMLString(content, baseURL: nil)
         self.textStackView.addArrangedSubview(webView ?? WKWebView())
     }
@@ -92,6 +100,7 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
         textView.font = .systemFont(ofSize: 18)
         textView.delegate = self
         textView.text = content
+        Utilities.styleTextView(textView, color: AIcademyTheme.magenta)
 
         textView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.textStackView.frame.height)
         
@@ -104,6 +113,10 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
     func createRichTextView(content:String){
         webView = WKWebView()
         webView?.navigationDelegate = self
+        webView?.layer.cornerRadius = 24
+        webView?.layer.borderWidth = 2
+        webView?.layer.borderColor = AIcademyTheme.magenta.cgColor
+        webView?.clipsToBounds = true
 
         
         let str = """
@@ -162,11 +175,6 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
     }
     @objc func dismissKeyboard() {
         view.endEditing(true)
-    }
-    
-    func adjustUITextViewHeightRich(arg : RichTextView) {
-        
-        arg.translatesAutoresizingMaskIntoConstraints = true
     }
     
     func convertToPdfFileAndShare(str: String,type:String, docInfoNotNil: docInfo){
@@ -305,5 +313,40 @@ class DocumentViewController: UIViewController, WKNavigationDelegate,UITextViewD
         }
         else {
         }
+    }
+
+    private func installHeaderIfNeeded() {
+        guard textStackView.arrangedSubviews.first(where: { $0.tag == headerTag }) == nil else { return }
+
+        let card = UIView()
+        card.tag = headerTag
+        AIcademyTheme.styleSurface(card, tint: AIcademyTheme.magenta)
+        card.translatesAutoresizingMaskIntoConstraints = false
+
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.numberOfLines = 0
+        title.text = docInformation?.questionTopic ?? "Saved Study Material"
+        AIcademyTheme.styleTitle(title, size: 26)
+
+        let subtitle = UILabel()
+        subtitle.translatesAutoresizingMaskIntoConstraints = false
+        subtitle.numberOfLines = 0
+        subtitle.text = "\(docInformation?.questionType ?? "Study sheet") • \(docInformation?.dateString ?? "")"
+        AIcademyTheme.styleSubtitle(subtitle, size: 14)
+
+        card.addSubview(title)
+        card.addSubview(subtitle)
+        NSLayoutConstraint.activate([
+            title.topAnchor.constraint(equalTo: card.topAnchor, constant: 18),
+            title.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 18),
+            title.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -18),
+            subtitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 8),
+            subtitle.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 18),
+            subtitle.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -18),
+            subtitle.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -18)
+        ])
+
+        textStackView.insertArrangedSubview(card, at: 0)
     }
 }

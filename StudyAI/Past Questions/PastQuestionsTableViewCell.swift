@@ -17,7 +17,9 @@ class PastQuestionsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        backgroundColor = .clear
+        contentView.layer.cornerRadius = 22
+        contentView.layer.masksToBounds = true
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

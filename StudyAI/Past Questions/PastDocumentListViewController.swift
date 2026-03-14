@@ -6,9 +6,10 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseFirestore
 
 class PastDocumentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,reloadDelegate {
+    private let historyHeaderTag = 8_112
     
     @IBOutlet weak var tableView: UITableView!
     var subject:String?
@@ -21,6 +22,8 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        AIcademyTheme.applyBackground(to: view)
+        view.backgroundColor = .clear
         
         if subject == nil || field == nil{
             let alertController = UIAlertController(title: "Error", message: "Getting your information", preferredStyle: .alert)
@@ -74,7 +77,10 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
             
             tableView.dataSource = self
             tableView.delegate = self
+            tableView.backgroundColor = .clear
+            tableView.separatorStyle = .none
             DocumentService.delegate = self
+            installHeaderIfNeeded()
         }
         // Do any additional setup after loading the view.
     }
@@ -93,6 +99,16 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
         cell?.dateLabel.text = question.dateString
         cell?.questionTopic.text = question.questionTopic
         cell?.typeOfQuestion.text = question.questionType
+        cell?.backgroundColor = .clear
+        cell?.contentView.backgroundColor = AIcademyTheme.surface
+        cell?.contentView.layer.cornerRadius = 22
+        cell?.contentView.layer.borderWidth = 2
+        cell?.contentView.layer.borderColor = AIcademyTheme.border.cgColor
+        cell?.questionTopic.textColor = AIcademyTheme.ink
+        cell?.questionTopic.font = .systemFont(ofSize: 18, weight: .heavy)
+        cell?.typeOfQuestion.textColor = AIcademyTheme.magenta
+        cell?.typeOfQuestion.font = .systemFont(ofSize: 13, weight: .bold)
+        cell?.dateLabel.textColor = AIcademyTheme.ink.withAlphaComponent(0.6)
         
         
         return cell ?? UITableViewCell()
@@ -100,6 +116,10 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return docTypesArray.count
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        110
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -175,9 +195,38 @@ class PastDocumentListViewController: UIViewController, UITableViewDelegate, UIT
             docTypesArray = DocumentService.fields[subject ?? ""]?[field ?? ""]?.sorted(by: {
                 return $0.questionType < $1.questionType}) ?? []
         default:
+            break
         }
         DocumentService.fields[subject ?? ""]?[field ?? ""] = docTypesArray
         tableView.reloadData()
+    }
+
+    private func installHeaderIfNeeded() {
+        guard tableView.tableHeaderView?.tag != historyHeaderTag else { return }
+
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 182))
+        header.tag = historyHeaderTag
+        header.backgroundColor = .clear
+
+        let card = UIView(frame: CGRect(x: 20, y: 12, width: header.bounds.width - 40, height: 154))
+        AIcademyTheme.styleSurface(card, tint: AIcademyTheme.magenta)
+        card.autoresizingMask = [.flexibleWidth]
+
+        let title = UILabel(frame: CGRect(x: 18, y: 22, width: card.bounds.width - 36, height: 32))
+        title.autoresizingMask = [.flexibleWidth]
+        title.text = "\(field ?? "Study") history"
+        AIcademyTheme.styleTitle(title, size: 28)
+        card.addSubview(title)
+
+        let subtitle = UILabel(frame: CGRect(x: 18, y: 60, width: card.bounds.width - 36, height: 52))
+        subtitle.autoresizingMask = [.flexibleWidth]
+        subtitle.numberOfLines = 0
+        subtitle.text = "Saved questions, guides, quizzes, and explanations live here so users can keep studying later."
+        AIcademyTheme.styleSubtitle(subtitle, size: 14)
+        card.addSubview(subtitle)
+
+        header.addSubview(card)
+        tableView.tableHeaderView = header
     }
     /*
      // MARK: - Navigation

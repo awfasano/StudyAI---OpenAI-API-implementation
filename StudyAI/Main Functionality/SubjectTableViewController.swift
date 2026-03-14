@@ -6,9 +6,11 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 class SubjectTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    private let subjectHeaderTag = 8_401
     
     var subjects = ["Math", "Science", "Social Sciences", "English","History"]
     
@@ -27,8 +29,13 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        AIcademyTheme.applyBackground(to: view)
+        view.backgroundColor = .clear
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        installHeaderIfNeeded()
         
         guard let userAuth = Auth.auth().currentUser else {
             return
@@ -36,7 +43,7 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
         
 
                 
-        if !userAuth.isEmailVerified && !UserService.user.receivedTokens {
+        if !userAuth.isEmailVerified {
             
             let cancel = UIAlertAction(title: "Cancel", style: .cancel){ (action) in
                 
@@ -52,27 +59,11 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
                 }
             }
             
-            let ac1 = UIAlertController(title: "Unverified Email", message: "Your email is not currenlty verified. Please verify your email to 50,000 tokens.", preferredStyle: .alert)
+            let ac1 = UIAlertController(title: "Verify Your Email", message: "Verify your email so account recovery and premium access stay reliable across devices.", preferredStyle: .alert)
             ac1.addAction(cancel)
             ac1.addAction(sendLink)
 
             self.present(ac1, animated: true)
-        }
-        else {
-            if (!UserService.user.isVerifiable && !UserService.user.receivedTokens){
-                let db = Firestore.firestore()
-                let ref = db.collection("users").document(UserService.user.id)
-                ref.updateData(["isVerifiable":true, "tokensRemaining":UserService.user.tokensRemaining+50000,"receivedTokens":true]) { err in
-                    if let err = err {
-                        self.showAlert(title: "Error", msg: "Was not able to update the tokens and your status.  Please send us an email at awfasano@gmail.com. And we will get this issue fixed.")
-
-                    }
-                    else {
-                        self.showAlert(title: "Success", msg: "Your tokens for verifying your email have been provided to you.")
-
-                    }
-                }
-            }
         }
         
         
@@ -82,20 +73,29 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else { return UITableViewCell() }
+        let color = colors[subjects[indexPath.section]]
 
         //cell.frame = CGRectMake(0, 0, tableView.frame.size.width-10, cell.frame.size.height)
         
         let view = UIView()
         view.layer.cornerRadius = 0
         
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = AIcademyTheme.surface
+        cell.contentView.layer.cornerRadius = 26
+        cell.contentView.layer.borderWidth = 2
+        cell.contentView.layer.borderColor = (color ?? AIcademyTheme.border).cgColor
+        cell.contentView.layer.shadowColor = AIcademyTheme.ink.cgColor
+        cell.contentView.layer.shadowOpacity = 0.08
+        cell.contentView.layer.shadowRadius = 12
+        cell.contentView.layer.shadowOffset = CGSize(width: 0, height: 8)
+
         cell.frame = CGRectMake(0, 0, tableView.frame.size.width, cell.frame.size.height)
         cell.subject.frame = cell.frame
-        
+
         cell.subject.text = subjects[indexPath.section]
+        cell.subject.font = .systemFont(ofSize: 26, weight: .heavy)
         //cell.subjectImage.image = subjects[keys[indexPath.row]]
-        
-        
-        let color = colors[subjects[indexPath.section]]
 
         switch subjects[indexPath.section] {
             
@@ -152,6 +152,7 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
             cell.layer.borderColor = color?.cgColor
             
         default:
+            break
         }
         return cell
     }
@@ -166,26 +167,69 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else { return UITableViewCell() }
         performSegue(withIdentifier: "toFields", sender: self)
     }
     
     func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else { return UITableViewCell() }
-        
-
-        
         selectedSubject = subjects[indexPath.section]
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0
+        return 12
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = UIColor.clear
         return headerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        92
+    }
+
+    private func installHeaderIfNeeded() {
+        guard tableView.tableHeaderView?.tag != subjectHeaderTag else { return }
+
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 212))
+        header.tag = subjectHeaderTag
+        header.backgroundColor = .clear
+
+        let card = UIView(frame: CGRect(x: 20, y: 12, width: header.bounds.width - 40, height: 184))
+        AIcademyTheme.styleSurface(card, tint: AIcademyTheme.cyan)
+        card.autoresizingMask = [.flexibleWidth]
+
+        let imageView = UIImageView(frame: CGRect(x: 18, y: 22, width: 96, height: 96))
+        Utilities.applyHeroImage(imageView)
+        card.addSubview(imageView)
+
+        let title = UILabel(frame: CGRect(x: 128, y: 26, width: card.bounds.width - 146, height: 34))
+        title.autoresizingMask = [.flexibleWidth]
+        title.numberOfLines = 0
+        title.text = "Pick your study lane"
+        AIcademyTheme.styleTitle(title, size: 28)
+        card.addSubview(title)
+
+        let subtitle = UILabel(frame: CGRect(x: 128, y: 66, width: card.bounds.width - 146, height: 56))
+        subtitle.autoresizingMask = [.flexibleWidth]
+        subtitle.numberOfLines = 0
+        subtitle.text = "Carlisle will shape the generator around the subject you choose first."
+        AIcademyTheme.styleSubtitle(subtitle, size: 14)
+        card.addSubview(subtitle)
+
+        let footer = UILabel(frame: CGRect(x: 18, y: 136, width: card.bounds.width - 36, height: 28))
+        footer.autoresizingMask = [.flexibleWidth]
+        footer.text = " Tap a card to keep building "
+        footer.font = .systemFont(ofSize: 13, weight: .bold)
+        footer.textColor = AIcademyTheme.ink
+        footer.textAlignment = .center
+        footer.backgroundColor = AIcademyTheme.orange.withAlphaComponent(0.22)
+        footer.layer.cornerRadius = 14
+        footer.clipsToBounds = true
+        card.addSubview(footer)
+
+        header.addSubview(card)
+        tableView.tableHeaderView = header
     }
     
     
@@ -222,6 +266,3 @@ class SubjectTableViewController: UIViewController, UITableViewDelegate, UITable
     */
 
 }
-
-
-

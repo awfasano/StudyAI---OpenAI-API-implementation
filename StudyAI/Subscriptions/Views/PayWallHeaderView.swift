@@ -8,14 +8,9 @@
 import UIKit
 
 class PayWallHeaderView: UIView {
-    let color = UIColor.init(hue: 0.0333, saturation: 0, brightness: 0.3, alpha: 1.0)
-
-    
     private let headerImageView:UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "crown.fill"))
-        imageView.tintColor = .white
+        let imageView = UIImageView(image: UIImage(named: "appicon.jpeg"))
         imageView.contentMode = .scaleAspectFit
-        imageView.frame = CGRect(x: 0, y: 0, width: 110, height: 110)
         return imageView
     }()
     
@@ -23,7 +18,10 @@ class PayWallHeaderView: UIView {
         super.init(frame: frame)
         clipsToBounds = true
         addSubview(headerImageView)
-        backgroundColor = color
+        layer.cornerRadius = 34
+        layer.borderWidth = 2
+        layer.borderColor = AIcademyTheme.ink.cgColor
+        backgroundColor = AIcademyTheme.softSurface
     }
     required init(coder: NSCoder) {
         fatalError()
@@ -31,7 +29,7 @@ class PayWallHeaderView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        headerImageView.frame = CGRect(x: (Int(bounds.width) - 110)/2, y: Int((bounds.height)-110)/2, width: 110, height: 110)
+        headerImageView.frame = CGRect(x: (bounds.width - 164)/2, y: 18, width: 164, height: bounds.height - 36)
     }
     
 

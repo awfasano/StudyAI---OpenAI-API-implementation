@@ -7,7 +7,7 @@
 
 import UIKit
 import FirebaseCore
-import Purchases
+import RevenueCat
 import FBSDKCoreKit
 
 @main
@@ -57,4 +57,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-

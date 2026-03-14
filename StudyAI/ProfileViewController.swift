@@ -6,19 +6,35 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, reloadUserDelegate {
+    private let profileHeaderTag = 8_701
+    private let profilePlanPillTag = 8_702
+    private var planSummary = "Plan: Free"
+
+    private func buildSettings() -> [String: [String]] {
+        ["User Settings":[
+            "Change First Name: \(UserService.user.firstName)",
+            "Change Last Name: \(UserService.user.lastName)",
+            "Update Email Address: \(UserService.user.email)",
+            "Verify Email Address",
+            "Change Password",
+            "Delete Account",
+            planSummary,
+            "Support: anthony@aicademy.us"
+        ]]
+    }
     
     func reload() {
-        
-        settings = ["User Settings":["Change First Name: \(UserService.user.firstName)","Change Last Name: \(UserService.user.lastName)","Update Email Address: \(UserService.user.email)","Verify Email Address","Change Password", "Delete Account", "Number of Tokens: \(UserService.user.tokensRemaining)","Support: anthony@aicademy.us"]]
-        
+        settings = buildSettings()
+        refreshPlanSummary()
         tableView.reloadData()
     }
     
 
-    var settings = ["User Settings":["Change First Name: \(UserService.user.firstName)","Change Last Name: \(UserService.user.lastName)","Update Email Address: \(UserService.user.email)","Verify Email Address","Change Password", "Delete Account", "Number of Tokens: \(UserService.user.tokensRemaining)","Support: anthony@aicademy.us"]]
+    lazy var settings = buildSettings()
     let settingsKeys = ["User Settings"]
 
     
@@ -29,6 +45,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        AIcademyTheme.applyBackground(to: view)
+        view.backgroundColor = .clear
         userServ = UserService
         userServ?.delegate = self
         
@@ -36,24 +54,37 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        installProfileHeaderIfNeeded()
+        refreshPlanSummary()
         
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        refreshPlanSummary()
         tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = AIcademyTheme.surface
+        cell.contentView.layer.cornerRadius = 20
+        cell.contentView.layer.borderWidth = 2
+        cell.contentView.layer.borderColor = AIcademyTheme.border.cgColor
+        cell.contentView.layer.masksToBounds = true
         
         if indexPath.row == 6 {
-            let setting = "Number of Tokens: \(UserService.user.tokensRemaining)"
+            let setting = planSummary
             var config = UIListContentConfiguration.cell()
             config.text = setting
+            config.textProperties.color = AIcademyTheme.ink
+            config.textProperties.font = .systemFont(ofSize: 16, weight: .bold)
             //config.secondaryText = ""
             cell.contentConfiguration = config
-            cell.isUserInteractionEnabled = true
+            cell.isUserInteractionEnabled = false
             cell.accessoryType = .none
             return cell
         }
@@ -62,6 +93,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                let setting = "Email is already Verified"
                var config = UIListContentConfiguration.cell()
                config.text = setting
+               config.textProperties.color = AIcademyTheme.ink
                cell.isUserInteractionEnabled = false
                cell.accessoryType = .checkmark
 
@@ -71,9 +103,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
            }
            else {
 
-               let setting = "Please Verify Email Address"
+               let setting = "Verify Email Address"
                var config = UIListContentConfiguration.cell()
                config.text = setting
+               config.textProperties.color = AIcademyTheme.ink
                //config.secondaryText = ""
                cell.contentConfiguration = config
                return cell
@@ -89,6 +122,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.accessoryType = .none
             var config = UIListContentConfiguration.cell()
             config.text = setting
+            config.textProperties.color = AIcademyTheme.ink
+            config.textProperties.font = .systemFont(ofSize: 16, weight: .semibold)
             //config.secondaryText = ""
             cell.contentConfiguration = config
 
@@ -112,7 +147,74 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         guard let header = view as? UITableViewHeaderFooterView else { return }
         header.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         header.textLabel?.frame = header.bounds
-        header.textLabel?.textAlignment = .center
+        header.textLabel?.textAlignment = .left
+        header.textLabel?.textColor = AIcademyTheme.ink
+        header.tintColor = .clear
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        60
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        54
+    }
+
+    private func installProfileHeaderIfNeeded() {
+        guard tableView.tableHeaderView?.tag != profileHeaderTag else { return }
+
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 196))
+        header.tag = profileHeaderTag
+        header.backgroundColor = .clear
+
+        let card = UIView(frame: CGRect(x: 20, y: 12, width: header.bounds.width - 40, height: 168))
+        AIcademyTheme.styleSurface(card, tint: AIcademyTheme.magenta)
+        card.autoresizingMask = [.flexibleWidth]
+
+        let avatar = UIImageView(frame: CGRect(x: 18, y: 18, width: 84, height: 84))
+        Utilities.applyHeroImage(avatar)
+        card.addSubview(avatar)
+
+        let title = UILabel(frame: CGRect(x: 118, y: 28, width: card.bounds.width - 136, height: 32))
+        title.autoresizingMask = [.flexibleWidth]
+        title.text = "\(UserService.user.firstName) \(UserService.user.lastName)"
+        AIcademyTheme.styleTitle(title, size: 26)
+        card.addSubview(title)
+
+        let subtitle = UILabel(frame: CGRect(x: 118, y: 64, width: card.bounds.width - 136, height: 50))
+        subtitle.autoresizingMask = [.flexibleWidth]
+        subtitle.numberOfLines = 0
+        subtitle.text = "Manage your account, verify your email, and keep your study access ready for the next Carlisle session."
+        AIcademyTheme.styleSubtitle(subtitle, size: 14)
+        card.addSubview(subtitle)
+
+        let pill = UILabel(frame: CGRect(x: 18, y: 120, width: card.bounds.width - 36, height: 30))
+        pill.tag = profilePlanPillTag
+        pill.autoresizingMask = [.flexibleWidth]
+        pill.text = " \(planSummary) "
+        pill.font = .systemFont(ofSize: 13, weight: .bold)
+        pill.textColor = AIcademyTheme.ink
+        pill.backgroundColor = AIcademyTheme.yellow.withAlphaComponent(0.28)
+        pill.layer.cornerRadius = 15
+        pill.clipsToBounds = true
+        pill.textAlignment = .center
+        card.addSubview(pill)
+
+        header.addSubview(card)
+        tableView.tableHeaderView = header
+    }
+
+    private func refreshPlanSummary() {
+        IAPManager.shared.getSubscriptionStatus { isPremium in
+            DispatchQueue.main.async {
+                self.planSummary = isPremium ? "Plan: Premium Active" : "Plan: Free"
+                self.settings = self.buildSettings()
+                self.tableView.reloadData()
+                if let pill = self.tableView.tableHeaderView?.viewWithTag(self.profilePlanPillTag) as? UILabel {
+                    pill.text = " \(self.planSummary) "
+                }
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -132,7 +234,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             case 3:
 
                 
-                promptForAnswerWithPassword(fieldUpdating: "Verify", field: "email", type: "verify", title: "Verify Email")
+                promptForAnswerWithPassword(fieldUpdating: "Verify", field: "email", type: "verify", title: "Send Verification Email")
 
             
             case 4:
@@ -208,15 +310,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         let submitAction = UIAlertAction(title: "Submit", style: .default) { [unowned ac] _ in
             let answer = ac.textFields?[0]
             
-            let trimmedAnswer = answer.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmedAnswer = answer?.text?.trimmingCharacters(in: .whitespacesAndNewlines)
 
-            if trimmedAnswer != nil || trimmedAnswer != ""{
+            if let trimmedAnswer, !trimmedAnswer.isEmpty {
                     let db = Firestore.firestore()
                     let UserRef =  db.collection("users").document(UserService.user.id)
                     let indicator = Indicator()
                     
                     indicator.showIndicator()
-                    UserRef.updateData([field:trimmedAnswer!]) { (error) in
+                    UserRef.updateData([field: trimmedAnswer]) { (error) in
                         if error != nil {
                             //show error message
 
@@ -278,12 +380,12 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             if ac.textFields?.count ?? 0 > 1 {
                 let answer = ac.textFields?[0]
                 let answer1 = ac.textFields?[1]
-                trimmedAnswer = answer.text?.trimmingCharacters(in: .whitespacesAndNewlines)
-                trimmedAnswerPassword = answer1.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+                trimmedAnswer = answer?.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+                trimmedAnswerPassword = answer1?.text?.trimmingCharacters(in: .whitespacesAndNewlines)
             }
             else {
                 let answer = ac.textFields?[0]
-                trimmedAnswerPassword = answer.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+                trimmedAnswerPassword = answer?.text?.trimmingCharacters(in: .whitespacesAndNewlines)
             }
 
 
@@ -295,7 +397,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             let credential = EmailAuthProvider.credential(withEmail: userAuth.email ?? "", password: trimmedAnswerPassword ?? "")
             
-            if trimmedAnswer != nil || trimmedAnswer != ""{
+            if trimmedAnswer != nil && trimmedAnswer != ""{
                 
                 let indicator = Indicator()
                 indicator.showIndicator()

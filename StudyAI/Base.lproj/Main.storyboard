@@ -791,7 +791,7 @@
                                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="Dac-8Z-aL5"/>
                                                                 </constraints>
                                                                 <state key="normal" title="Button"/>
-                                                                <buttonConfiguration key="configuration" style="tinted" title="Tokens: " cornerStyle="capsule"/>
+                                                                <buttonConfiguration key="configuration" style="tinted" title="Free Plan" cornerStyle="capsule"/>
                                                                 <connections>
                                                                     <action selector="tokensOnTap:" destination="wCY-8i-Xkb" eventType="touchUpInside" id="Ysa-Wn-Nhg"/>
                                                                 </connections>
@@ -969,7 +969,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Zr7-rU-y4e">
-                        <barButtonItem key="rightBarButtonItem" title="ChatGPT3.5" id="W63-ok-Iyo">
+                        <barButtonItem key="rightBarButtonItem" title="Fast mode" id="W63-ok-Iyo">
                             <connections>
                                 <action selector="toggleGPTLevel:" destination="wCY-8i-Xkb" id="yiT-h7-KEs"/>
                             </connections>
@@ -1146,7 +1146,7 @@
                                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="8ox-hP-OcZ"/>
                                                                 </constraints>
                                                                 <state key="normal" title="Button"/>
-                                                                <buttonConfiguration key="configuration" style="tinted" title="Tokens:" cornerStyle="capsule"/>
+                                                                <buttonConfiguration key="configuration" style="tinted" title="Free Plan" cornerStyle="capsule"/>
                                                                 <connections>
                                                                     <action selector="tokensOnTap:" destination="H4u-gN-dKV" eventType="touchUpInside" id="Yih-Td-SL8"/>
                                                                 </connections>
@@ -1297,7 +1297,7 @@
                                                         <constraints>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="qTb-Lp-5Qh"/>
                                                         </constraints>
-                                                        <string key="text">The top right button 's default is ChatGPT3.5 When you select a type of question that says dynamic.  The results may be formatted better if you select GPT4.  Every request to GPT costs tokens. GPT4 uses 15 times more tokens than GPT3.5.  If you need more tokens just press the tokens button in the right hand corner.</string>
+                                                        <string key="text">Use the top-right mode toggle to switch between a faster generation mode and a deeper one. Free users get a limited number of study sessions each day, and Premium unlocks fuller access when you need more room.</string>
                                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>

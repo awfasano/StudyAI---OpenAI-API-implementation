@@ -12,9 +12,10 @@ class PayWallDescriptionView: UIView {
     private let descriptorLabel:UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 26, weight: .medium)
+        label.font = .systemFont(ofSize: 28, weight: .heavy)
         label.numberOfLines = 0
-        label.text = "Buy 250,000 tokens ask questions to generate and save AI Generated Study material from ChatGPT!"
+        label.text = "Unlock brighter study sessions, more generations, and more time with Carlisle."
+        label.textColor = AIcademyTheme.ink
 
         return label
     }()
@@ -22,15 +23,17 @@ class PayWallDescriptionView: UIView {
     private let priceLabel:UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 22, weight: .medium)
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.numberOfLines = 0
-        label.text = "$2.99"
+        label.text = "Premium plans available"
+        label.textColor = AIcademyTheme.magenta
         return label
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         clipsToBounds = true
+        AIcademyTheme.styleSurface(self)
         addSubview(priceLabel)
         addSubview(descriptorLabel)
     }
